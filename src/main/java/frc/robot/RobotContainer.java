@@ -24,7 +24,7 @@ import frc.robot.subsystems.drive.DriveIO;
 import frc.robot.subsystems.drive.DriveIOReal;
 import frc.robot.subsystems.drive.DriveIOSim;
 import frc.robot.subsystems.loader.LoaderIO;
-import frc.robot.subsystems.loader.LoaderIOReal;
+import frc.robot.subsystems.loader.LoaderIOSparkMax;
 import frc.robot.subsystems.loader.LoaderIOSim;
 import frc.robot.subsystems.loader.Loader;
 import frc.robot.subsystems.pivot.Pivot;
@@ -58,7 +58,7 @@ public class RobotContainer {
             case REAL:
                 drive = new Drive(new DriveIOReal());
                 pivot = new Pivot(new PivotIOReal());
-                loader = new Loader(new LoaderIOReal());
+                loader = new Loader(new LoaderIOSparkMax());
                 vision = new Vision(new VisionIOReal());
                 break;
             
