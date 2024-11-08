@@ -29,7 +29,7 @@ public class Loader extends SubsystemBase {
     }
 
     /**
-     * Runs the motor to pull in ballons at a voltage of `LoaderConstants.MOTOR_VOLTAGE`.
+     * Runs the motor to pull in balloons at a voltage of `LoaderConstants.MOTOR_VOLTAGE`.
      */
     public void intake() {
         io.setMotorVolts(LoaderConstants.MOTOR_VOLTAGE);
