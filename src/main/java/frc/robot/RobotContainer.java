@@ -23,18 +23,14 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveIO;
 import frc.robot.subsystems.drive.DriveIOReal;
 import frc.robot.subsystems.drive.DriveIOSim;
-import frc.robot.subsystems.indexer.Indexer;
-import frc.robot.subsystems.indexer.IndexerIO;
-import frc.robot.subsystems.indexer.IndexerIOReal;
-import frc.robot.subsystems.indexer.IndexerIOSim;
+import frc.robot.subsystems.loader.LoaderIO;
+import frc.robot.subsystems.loader.LoaderIOReal;
+import frc.robot.subsystems.loader.LoaderIOSim;
+import frc.robot.subsystems.loader.Loader;
 import frc.robot.subsystems.pivot.Pivot;
 import frc.robot.subsystems.pivot.PivotIO;
 import frc.robot.subsystems.pivot.PivotIOReal;
 import frc.robot.subsystems.pivot.PivotIOSim;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOReal;
@@ -50,9 +46,8 @@ public class RobotContainer {
 
       // Subsystems
     private final Drive drive;
-    public final Indexer indexer;
-    public final Pivot pivot;
-    public final Shooter shooter;
+    private final Pivot pivot;
+    private final Loader loader;
     private final Vision vision;
 
     // Dashboard inputs
@@ -62,25 +57,22 @@ public class RobotContainer {
         switch (Constants.currentMode) {
             case REAL:
                 drive = new Drive(new DriveIOReal());
-                indexer = new Indexer(new IndexerIOReal());
                 pivot = new Pivot(new PivotIOReal());
-                shooter = new Shooter(new ShooterIOReal());
+                loader = new Loader(new LoaderIOReal());
                 vision = new Vision(new VisionIOReal());
                 break;
             
             case SIM:
                 drive = new Drive(new DriveIOSim());
-                indexer = new Indexer(new IndexerIOSim());
                 pivot = new Pivot(new PivotIOSim());
-                shooter = new Shooter(new ShooterIOSim());
+                loader = new Loader(new LoaderIOSim());
                 vision = new Vision(new VisionIOSim());
                 break;
 
             default:
                 drive = new Drive(new DriveIO() {});
-                indexer = new Indexer(new IndexerIO() {});
                 pivot = new Pivot(new PivotIO() {});
-                shooter = new Shooter(new ShooterIO() {});
+                loader = new Loader(new LoaderIO() {});
                 vision = new Vision(new VisionIO() {});
                 break;
         }
