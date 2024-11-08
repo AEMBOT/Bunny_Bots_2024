@@ -13,6 +13,15 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -33,5 +42,50 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static final class VisionConstants {
+
+    // List of static april tags on the field, not the ones on the totes
+    // Field layout can also be imported from a json file if we decide to do that
+    // TODO get exact values of april tag positions
+    private static final List<AprilTag> fieldAprilTags = List.of(
+      new AprilTag(13, 
+        new Pose3d(0, 0, 0, 
+          new Rotation3d(0, 0, 0))),
+     new AprilTag(14, 
+        new Pose3d(0, 0, 0, 
+          new Rotation3d(0, 0, 0))),
+     new AprilTag(15, 
+        new Pose3d(0, 0, 0, 
+          new Rotation3d(0, 0, 0))),
+      new AprilTag(16, 
+        new Pose3d(0, 0, 0, 
+          new Rotation3d(0, 0, 0))),
+     new AprilTag(17, 
+        new Pose3d(0.0, 0.0, 0.0, 
+          new Rotation3d(0.0, 0.0, 0.0))),
+     new AprilTag(18, 
+        new Pose3d(0, 0, 0, 
+          new Rotation3d(0, 0, 0))),
+     new AprilTag(19, 
+        new Pose3d(0, 0, 0, 
+          new Rotation3d(0, 0, 0))),
+     new AprilTag(20, 
+        new Pose3d(0, 0, 0, 
+          new Rotation3d(0, 0, 0))));
+
+    // All information pertaining to the front camera
+    // TODO get distance from cam to center of bot
+    public static final String frontCamName = "front";
+    public static final Transform3d frontCamToRobot = new Transform3d(
+      new Translation3d(0, 0, 0),
+      new Rotation3d(0, 0, 0));
+
+    // April tag field layout, inclues the positions of all static april tags as well as the size of the field
+    // TODO confirm that length is 54 and width is 27 and not vice versa
+    public static final AprilTagFieldLayout aprilTagFieldLayout =
+    new AprilTagFieldLayout(fieldAprilTags, 54, 27);
+
   }
 }
