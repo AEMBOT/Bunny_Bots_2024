@@ -45,7 +45,7 @@ public class Loader extends SubsystemBase {
     /**
      * Runs the motor to spit out balloons at a voltage of `-LoaderConstants.MOTOR_VOLTAGE`.
      */
-    public void outtake() { // Not sure of this name
+    public void eject() {
         io.setMotorVolts(-LoaderConstants.MOTOR_VOLTAGE);
     }
 
@@ -58,6 +58,6 @@ public class Loader extends SubsystemBase {
     }
 
     public Command outtakeCommand() {
-        return runOnce(this::outtake);
+        return runOnce(this::eject);
     }
 }
