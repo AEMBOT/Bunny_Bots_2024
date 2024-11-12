@@ -57,7 +57,7 @@ public class Loader extends SubsystemBase {
         return runOnce(this::stop);
     }
 
-    public Command outtakeCommand() {
+    public Command ejectCommand() {
         return runOnce(this::eject);
     }
 }
