@@ -19,6 +19,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveIO;
 import frc.robot.subsystems.drive.DriveIOReal;
@@ -49,6 +50,10 @@ public class RobotContainer {
     private final Pivot pivot;
     private final Loader loader;
     private final Vision vision;
+
+    // Controller
+    private final CommandXboxController controller = new CommandXboxController(0);
+    private final CommandXboxController backupController = new CommandXboxController(1);
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
@@ -90,6 +95,8 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Is this the right method for defaults? It was used for such in the FRC 2024 codebase.
     loader.setDefaultCommand(loader.intakeCommand());
+
+    controller.rightBumper().whileTrue(loader.ejectCommand());
   }
 
   /**
