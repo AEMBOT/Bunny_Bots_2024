@@ -79,6 +79,7 @@ public class RobotContainer {
 
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+        configureButtonBindings();
     }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -87,7 +88,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-   
+    // Is this the right method for defaults? It was used for such in the FRC 2024 codebase.
+    loader.setDefaultCommand(loader.intakeCommand());
   }
 
   /**
