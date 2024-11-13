@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.DriveIOTalonFX;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.loader.LoaderIO;
 import frc.robot.subsystems.loader.LoaderIOReal;
@@ -56,7 +56,7 @@ public class RobotContainer {
     public RobotContainer() {
         switch (Constants.currentMode) {
             case REAL:
-                drive = new Drive(new DriveIOTalonFX());
+                drive = new Drive(new ModuleIOTalonFX());
                 pivot = new Pivot(new PivotIOReal());
                 loader = new Loader(new LoaderIOReal());
                 vision = new Vision(new VisionIOReal());

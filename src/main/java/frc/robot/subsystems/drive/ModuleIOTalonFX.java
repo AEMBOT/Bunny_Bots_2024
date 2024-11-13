@@ -1,8 +1,8 @@
 package frc.robot.subsystems.drive;
 
-public class DriveIOTalonFX implements ModuleIO {
+public class ModuleIOTalonFX implements ModuleIO {
     
-    public DriveIOTalonFX() {}
+    public ModuleIOTalonFX() {}
 
     public void updateInputs(ModuleIOInputs inputs) {}
 
