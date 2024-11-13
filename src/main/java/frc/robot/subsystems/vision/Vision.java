@@ -17,9 +17,6 @@ public class Vision extends SubsystemBase {
     }
 
     public Pose3d getVisionRobotPose() {
-     if (inputs.estimatedRobotPose.isPresent()) {
-        return inputs.estimatedRobotPose.get();
-     }
-    return null;
+        return inputs.estimatedRobotPose;
     }
 }

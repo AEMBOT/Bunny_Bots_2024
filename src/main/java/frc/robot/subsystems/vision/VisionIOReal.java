@@ -6,8 +6,6 @@ import static org.photonvision.PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
-import java.util.Optional;
-
 import edu.wpi.first.math.geometry.Pose3d;
 
 public class VisionIOReal implements VisionIO {
@@ -15,7 +13,7 @@ public class VisionIOReal implements VisionIO {
     private final PhotonCamera frontCam;
     private final PhotonPoseEstimator frontCamPoseEstimator;
 
-    private Optional<Pose3d> estimatedRobotPose = Optional.of(new Pose3d());
+    private Pose3d estimatedRobotPose = new Pose3d();
 
     public VisionIOReal() {
         // Front Cam
@@ -38,11 +36,11 @@ public class VisionIOReal implements VisionIO {
         frontCamPoseEstimator.update().ifPresentOrElse(
             // If it does, set estimated robot pose to the estimated pose
             (value) -> { 
-                estimatedRobotPose = Optional.of(value.estimatedPose); 
+                estimatedRobotPose = value.estimatedPose; 
             },
             // If it doesnt, set estimated robot pose to an empty value
             () -> { 
-                estimatedRobotPose = Optional.empty();
+                estimatedRobotPose = null;
             }
          );
      }

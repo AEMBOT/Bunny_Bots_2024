@@ -1,7 +1,5 @@
 package frc.robot.subsystems.vision;
 
-import java.util.Optional;
-
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -11,7 +9,7 @@ public interface VisionIO {
     
     @AutoLog
     public static class VisionIOInputs {
-        public Optional<Pose3d> estimatedRobotPose = Optional.of(new Pose3d());
+        public Pose3d estimatedRobotPose = new Pose3d();
     }
 
     // Updates the set of loggable inputs.

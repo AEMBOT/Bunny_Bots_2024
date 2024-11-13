@@ -3,8 +3,6 @@ package frc.robot.subsystems.vision;
 import static frc.robot.Constants.VisionConstants.*;
 import static org.photonvision.PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
-import java.util.Optional;
-
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
@@ -23,7 +21,7 @@ public class VisionIOSim implements VisionIO {
     private final PhotonCameraSim frontCam;
     private final PhotonPoseEstimator frontPoseEstimator;
     
-    private Optional<Pose3d> estimatedRobotPose = Optional.of(new Pose3d());
+    private Pose3d estimatedRobotPose = new Pose3d();
 
     public VisionIOSim() {
         PhotonCamera front = new PhotonCamera("front");
@@ -65,11 +63,11 @@ public class VisionIOSim implements VisionIO {
         frontPoseEstimator.update().ifPresentOrElse(
             // If it does, set estimated robot pose to the estimated pose
             (value) -> { 
-                estimatedRobotPose = Optional.of(value.estimatedPose); 
+                estimatedRobotPose = value.estimatedPose; 
             },
             // If it doesnt, set estimated robot pose to an empty value
             () -> { 
-                estimatedRobotPose = Optional.empty();
+                estimatedRobotPose = null;
             }
          );
      }
