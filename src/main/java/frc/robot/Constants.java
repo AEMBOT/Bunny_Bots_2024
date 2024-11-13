@@ -18,6 +18,7 @@ import java.util.List;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -75,17 +76,34 @@ public final class Constants {
         new Pose3d(0, 0, 0, 
           new Rotation3d(0, 0, 0))));
 
-    // All information pertaining to the front camera
-    // TODO get distance from cam to center of bot
-    public static final String frontCamName = "front";
-    public static final Transform3d frontCamToRobot = new Transform3d(
-      new Translation3d(0, 0, 0),
-      new Rotation3d(0, 0, 0));
-
     // April tag field layout, inclues the positions of all static april tags as well as the size of the field
     // TODO confirm that length is 54 and width is 27 and not vice versa
     public static final AprilTagFieldLayout aprilTagFieldLayout =
     new AprilTagFieldLayout(fieldAprilTags, 54, 27);
+
+    // All information pertaining to the front camera
+    // TODO determine these values  
+    public static final String frontCamName = "front";
+    //Transform from the camera of the center of the robot
+    public static final Transform3d frontCamToRobot = new Transform3d(
+      new Translation3d(0, 0, 0),
+      new Rotation3d(0, 0, 0));
+    // Vertical Resolution
+    public static final int frontCamVertRes = 1000;
+    // Horizontal Resolution 
+    public static final int frontCamHorizRes = 1000;
+    // Camera Rotation Factor (not sure exactly what this is for)
+    public static final Rotation2d frontCamRotation = Rotation2d.fromDegrees(90);
+    // Pixel Error
+    public static final double frontCamPxErr = 0;
+    // Pixel Error Standard Deviation
+    public static final double frontCamPxErrStdDev = 0;
+    // Camera Frames Per Second
+    public static final double frontCamFPS = 60;
+    // Average Latency from Camera
+    public static final double frontCamAvgLatency = 0;
+    // Standard Deviation in Latency
+    public static final double frontCamLatencyStdDev = 0;
 
   }
 }

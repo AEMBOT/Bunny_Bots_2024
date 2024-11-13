@@ -5,14 +5,17 @@ import static org.photonvision.PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import java.util.ArrayList; 
+
+import java.util.Optional;
+
 import edu.wpi.first.math.geometry.Pose3d;
+
 public class VisionIOReal implements VisionIO {
     
     private final PhotonCamera frontCam;
     private final PhotonPoseEstimator frontCamPoseEstimator;
 
-    private ArrayList<Pose3d> visibleAprilTags = new ArrayList<Pose3d>();
+    private Optional<Pose3d> estimatedRobotPose = Optional.of(new Pose3d());
 
     public VisionIOReal() {
         // Front Cam
@@ -24,10 +27,23 @@ public class VisionIOReal implements VisionIO {
             frontCamToRobot);
     }
 
-    public void updateInputs(VisionIOInputs inputs) {}
-
-    // Returns the pose of the robot estimated by its vision
-    public void updateEstimatedPose() {
-        frontCamPoseEstimator.update();    
+    public void updateInputs(VisionIOInputs inputs) {
+        updateEstimatedPose();
+        inputs.estimatedRobotPose = estimatedRobotPose;
     }
+
+    // Updates the pose of the robot estimated by vision
+    public void updateEstimatedPose() {
+        //Checks if the pose estimator has a value
+        frontCamPoseEstimator.update().ifPresentOrElse(
+            // If it does, set estimated robot pose to the estimated pose
+            (value) -> { 
+                estimatedRobotPose = Optional.of(value.estimatedPose); 
+            },
+            // If it doesnt, set estimated robot pose to an empty value
+            () -> { 
+                estimatedRobotPose = Optional.empty();
+            }
+         );
+     }
 }
