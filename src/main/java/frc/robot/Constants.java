@@ -13,6 +13,9 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -33,5 +36,27 @@ public final class Constants {
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static final class DriveConstants {
+    // May need tweaking
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5); // MK4i L3+
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(22.75); // 28 in square chassis
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(22.75);
+    public static final double DRIVE_BASE_RADIUS =
+      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+
+    public static final class Module {
+      public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
+      public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
+
+      public static final Rotation2d[] absoluteEncoderOffset = {
+        Rotation2d.fromRadians(-0.8206797215188181 + Math.PI), // FL
+        Rotation2d.fromRadians(2.4559032414049113 + Math.PI), // FR
+        Rotation2d.fromRadians(1.863786657281054), // BL
+        Rotation2d.fromRadians(-1.4388739790367313) // BR
+      };
+    }
   }
 }

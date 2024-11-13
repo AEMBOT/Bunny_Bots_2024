@@ -20,6 +20,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOSim;
@@ -56,21 +58,40 @@ public class RobotContainer {
     public RobotContainer() {
         switch (Constants.currentMode) {
             case REAL:
-                drive = new Drive(new ModuleIOTalonFX());
+                drive = new Drive(
+                  new GyroIONavX(),
+                  new ModuleIOTalonFX(0),
+                  new ModuleIOTalonFX(1),
+                  new ModuleIOTalonFX(2),
+                  new ModuleIOTalonFX(3)
+                );
                 pivot = new Pivot(new PivotIOReal());
                 loader = new Loader(new LoaderIOReal());
                 vision = new Vision(new VisionIOReal());
                 break;
             
             case SIM:
-                drive = new Drive(new ModuleIOSim());
+                drive = new Drive(
+                  new GyroIO() {},
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim()
+                  );
                 pivot = new Pivot(new PivotIOSim());
                 loader = new Loader(new LoaderIOSim());
                 vision = new Vision(new VisionIOSim());
                 break;
 
             default:
-                drive = new Drive(new ModuleIO() {});
+                // Replayed robot, disable IO implementations
+                drive = new Drive(
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {}
+                );
                 pivot = new Pivot(new PivotIO() {});
                 loader = new Loader(new LoaderIO() {});
                 vision = new Vision(new VisionIO() {});
