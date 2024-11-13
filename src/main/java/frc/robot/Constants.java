@@ -47,6 +47,10 @@ public final class Constants {
       Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
     public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
 
+    public static final double CONTROLLER_DEADBAND = 0.05;
+    public static final double SLOWMODE_MAX_METERS_PER_SEC = 1;
+    public static final double SLOWMODE_ROTATION_SPEED_FACTOR = 0.2;
+
     public static final class Module {
       public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
       public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX

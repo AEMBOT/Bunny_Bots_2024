@@ -121,7 +121,7 @@ public class RobotContainer {
           () -> -controller.getLeftY(),
           () -> -controller.getLeftX(),
           () -> -controller.getRightX(),
-          () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger 0/1
+          () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger boolean, rather than analog.
   }
 
   /**

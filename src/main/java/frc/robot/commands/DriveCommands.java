@@ -28,10 +28,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class DriveCommands {
-  private static final double DEADBAND = 0.05;
-  private static final double SLOWMODE_MAX_METERS_PER_SEC = 1;
-  private static final double SLOWMODE_ROTATION_SPEED_FACTOR = 0.2;
-
   private DriveCommands() {}
 
   /**
@@ -48,10 +44,10 @@ public class DriveCommands {
           // Apply deadband
           double linearMagnitude =
               MathUtil.applyDeadband(
-                  Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
+                  Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DriveConstants.CONTROLLER_DEADBAND);
           Rotation2d linearDirection =
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DriveConstants.CONTROLLER_DEADBAND);
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;
@@ -70,13 +66,13 @@ public class DriveCommands {
           drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   slowmode.getAsBoolean()
-                      ? linearVelocity.getX() * SLOWMODE_MAX_METERS_PER_SEC
+                      ? linearVelocity.getX() * DriveConstants.SLOWMODE_MAX_METERS_PER_SEC
                       : linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
                   slowmode.getAsBoolean()
-                      ? linearVelocity.getY() * SLOWMODE_MAX_METERS_PER_SEC
+                      ? linearVelocity.getY() * DriveConstants.SLOWMODE_MAX_METERS_PER_SEC
                       : linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
                   slowmode.getAsBoolean()
-                      ? omega * DriveConstants.MAX_ANGULAR_SPEED * SLOWMODE_ROTATION_SPEED_FACTOR
+                      ? omega * DriveConstants.MAX_ANGULAR_SPEED * DriveConstants.SLOWMODE_ROTATION_SPEED_FACTOR
                       : omega * DriveConstants.MAX_ANGULAR_SPEED,
                   isFlipped
                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
