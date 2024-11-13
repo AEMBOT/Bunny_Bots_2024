@@ -20,6 +20,9 @@ public class LoaderIOSparkMax implements LoaderIO {
 
         delay(0.25);
 
+        // Recommended by REV in order to ensure that new settings are not lost
+        // during a brown-out scenario where the Spark Max loses power but the
+        // RoboRio does not
         motor.burnFlash();
     }
 
