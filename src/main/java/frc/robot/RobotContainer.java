@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveIO;
-import frc.robot.subsystems.drive.DriveIOReal;
-import frc.robot.subsystems.drive.DriveIOSim;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.DriveIOTalonFX;
+import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.loader.LoaderIO;
 import frc.robot.subsystems.loader.LoaderIOReal;
 import frc.robot.subsystems.loader.LoaderIOSim;
@@ -56,21 +56,21 @@ public class RobotContainer {
     public RobotContainer() {
         switch (Constants.currentMode) {
             case REAL:
-                drive = new Drive(new DriveIOReal());
+                drive = new Drive(new DriveIOTalonFX());
                 pivot = new Pivot(new PivotIOReal());
                 loader = new Loader(new LoaderIOReal());
                 vision = new Vision(new VisionIOReal());
                 break;
             
             case SIM:
-                drive = new Drive(new DriveIOSim());
+                drive = new Drive(new ModuleIOSim());
                 pivot = new Pivot(new PivotIOSim());
                 loader = new Loader(new LoaderIOSim());
                 vision = new Vision(new VisionIOSim());
                 break;
 
             default:
-                drive = new Drive(new DriveIO() {});
+                drive = new Drive(new ModuleIO() {});
                 pivot = new Pivot(new PivotIO() {});
                 loader = new Loader(new LoaderIO() {});
                 vision = new Vision(new VisionIO() {});
