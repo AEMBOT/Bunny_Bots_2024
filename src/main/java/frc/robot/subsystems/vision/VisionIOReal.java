@@ -5,8 +5,10 @@ import static org.photonvision.PhotonPoseEstimator.PoseStrategy.MULTI_TAG_PNP_ON
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 public class VisionIOReal implements VisionIO {
     
@@ -14,6 +16,7 @@ public class VisionIOReal implements VisionIO {
     private final PhotonPoseEstimator frontCamPoseEstimator;
 
     private Pose3d estimatedRobotPose = new Pose3d();
+    public Transform3d[] visibleToteAprilTags = new Transform3d[12];
 
     public VisionIOReal() {
         // Front Cam
@@ -27,6 +30,7 @@ public class VisionIOReal implements VisionIO {
 
     public void updateInputs(VisionIOInputs inputs) {
         updateEstimatedPose();
+        updateVisibleToteAprilTags();
         inputs.estimatedRobotPose = estimatedRobotPose;
     }
 
@@ -43,5 +47,14 @@ public class VisionIOReal implements VisionIO {
                 estimatedRobotPose = null;
             }
          );
+     }
+
+     public void updateVisibleToteAprilTags() {
+        visibleToteAprilTags = new Transform3d[12];
+        for(PhotonTrackedTarget target : frontCam.getLatestResult().getTargets()) {
+            if (target.getFiducialId() < 12) {
+                visibleToteAprilTags[target.getFiducialId()] = target.getBestCameraToTarget();
+            }
+        }
      }
 }

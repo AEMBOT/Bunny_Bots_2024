@@ -8,9 +8,11 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 
 
 public class VisionIOSim implements VisionIO {
@@ -20,6 +22,7 @@ public class VisionIOSim implements VisionIO {
     // Front Cam Sim
     private final PhotonCameraSim frontCam;
     private final PhotonPoseEstimator frontPoseEstimator;
+    public Transform3d[] visibleToteAprilTags = new Transform3d[12];
     
     private Pose3d estimatedRobotPose = new Pose3d();
 
@@ -72,4 +75,6 @@ public class VisionIOSim implements VisionIO {
          );
      }
 
+     // update visible tote april tags is a whole ordeal for sim so im not gonna do it right now 
+     // TODO implement tote tags to sim
 }
