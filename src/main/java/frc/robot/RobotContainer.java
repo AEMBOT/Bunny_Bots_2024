@@ -19,6 +19,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
 import frc.robot.subsystems.drive.GyroIONavX;
@@ -37,6 +38,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOReal;
 import frc.robot.subsystems.vision.VisionIOSim;
+import frc.robot.commands.DriveCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -45,12 +47,15 @@ import frc.robot.subsystems.vision.VisionIOSim;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-      // Subsystems
+    // Subsystems
     private final Drive drive;
     private final Pivot pivot;
     private final Loader loader;
     private final Vision vision;
+
+    // Controller
+    private final CommandXboxController controller = new CommandXboxController(0);
+    private final CommandXboxController backupController = new CommandXboxController(1);
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
@@ -100,6 +105,8 @@ public class RobotContainer {
 
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+        // Configure the button bindings
+        configureButtonBindings();
     }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -108,7 +115,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-   
+    drive.setDefaultCommand(
+      DriveCommands.joystickDrive(
+          drive,
+          () -> -controller.getLeftY(),
+          () -> -controller.getLeftX(),
+          () -> -controller.getRightX(),
+          () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger 0/1
   }
 
   /**
