@@ -254,6 +254,7 @@ public class Drive extends SubsystemBase {
         stop();
     }
 
+    /** Runs drive characterization for each module with the given amount of volts. */
     private void runDriveCharacterizationVolts(double volts) {
         for (Module module : modules) {
           module.runDriveCharacterization(volts);
@@ -349,6 +350,7 @@ public class Drive extends SubsystemBase {
         };
     }
 
+    /** Command to run module steering characterization */
     public Command runModuleSteerCharacterizationCmd() {
         return Commands.sequence(
             this.runOnce(SignalLogger::start),
@@ -362,6 +364,7 @@ public class Drive extends SubsystemBase {
             this.runOnce(SignalLogger::stop));
     }
 
+    /** Command to run drive characterization */
     public Command runDriveCharacterizationCmd() { // TODO Timing on this seems sus
         return Commands.sequence(
             this.runOnce(SignalLogger::start),

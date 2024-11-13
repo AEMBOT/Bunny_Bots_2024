@@ -51,7 +51,9 @@ public class Module {
         }
     }
 
-    /** Runs the module with the specified setpoint state. Returns the optimized state. */
+    /** Runs the module with the specified setpoint state. 
+     * 
+     * @return the optimized state. */
     public SwerveModuleState runSetpoint(SwerveModuleState state) {
         // Optimize state based on current angle
         // Controllers run in "periodic" when the setpoint is not null
