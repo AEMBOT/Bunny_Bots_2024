@@ -38,7 +38,6 @@ public final class Constants {
   public static class LoaderConstants {
     /* PORTS */
     public static final int MOTOR_PORT = -1; // PLACEHOLDER VALUE
-    public static final int BEAM_BREAK_PORT = -1; // PLACEHOLDER VALUE
     /* Voltages */
     public static final double MOTOR_VOLTAGE = 1.0; // PLACEHOLDER VALUE
     /* CURRENT LIMITS */

@@ -22,13 +22,6 @@ public class Loader extends SubsystemBase {
     }
 
     /**
-     * @return The state of the beam break. `true` if the beam break is obstructed, `false` otherwise.
-     */
-    public boolean getBeamBreakState() {
-        return inputs.beamBreakState;
-    }
-
-    /**
      * Runs the motor to pull in balloons at a voltage of `LoaderConstants.MOTOR_VOLTAGE`.
      */
     public void intake() {

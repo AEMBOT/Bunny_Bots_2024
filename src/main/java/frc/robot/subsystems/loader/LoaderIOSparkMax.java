@@ -11,8 +11,6 @@ import frc.robot.Constants.LoaderConstants;
 public class LoaderIOSparkMax implements LoaderIO {
     private final CANSparkMax motor = new CANSparkMax(LoaderConstants.MOTOR_PORT, kBrushless);
 
-    private DigitalInput beamBreak = new DigitalInput(LoaderConstants.BEAM_BREAK_PORT);
-
     public LoaderIOSparkMax() {
         motor.restoreFactoryDefaults();
 
@@ -28,8 +26,6 @@ public class LoaderIOSparkMax implements LoaderIO {
 
     @Override
     public void updateInputs(LoaderIOInputs inputs) {
-        inputs.beamBreakState = !beamBreak.get();
-
         inputs.motorAppliedVolts = motor.getAppliedOutput() * motor.getBusVoltage();
         inputs.motorCurrentAmps = motor.getOutputCurrent();
     }
