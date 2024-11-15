@@ -52,6 +52,23 @@ public final class Constants {
     public static final double SLOWMODE_ROTATION_SPEED_FACTOR = 0.2;
 
     public static final class Module {
+      /* PORTS */
+      public static final int TALON_DRIVE_MOTOR_0 = 7;
+      public static final int TALON_TURN_MOTOR_0 = 8;
+      public static final int TALON_CANCODER_0 = 26;
+
+      public static final int TALON_DRIVE_MOTOR_1 = 5;
+      public static final int TALON_TURN_MOTOR_1 = 6;
+      public static final int TALON_CANCODER_1 = 24;
+
+      public static final int TALON_DRIVE_MOTOR_2 = 3;
+      public static final int TALON_TURN_MOTOR_2 = 4;
+      public static final int TALON_CANCODER_2 = 25;
+
+      public static final int TALON_DRIVE_MOTOR_3 = 9;
+      public static final int TALON_TURN_MOTOR_3 = 2;
+      public static final int TALON_CANCODER_3 = 23;
+
       public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
       public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
 

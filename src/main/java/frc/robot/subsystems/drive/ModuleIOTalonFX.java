@@ -87,33 +87,33 @@ public class ModuleIOTalonFX implements ModuleIO {
   public ModuleIOTalonFX(int index) {
     switch (index) {
       case 0:
-        driveTalon = new TalonFX(7, "*");
-        turnTalon = new TalonFX(8, "*");
-        cancoder = new CANcoder(26, "*");
+        driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_0, "*");
+        turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_0, "*");
+        cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_0, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[0];
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         break;
       case 1:
-        driveTalon = new TalonFX(5, "*");
-        turnTalon = new TalonFX(6, "*");
-        cancoder = new CANcoder(24, "*");
+        driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_1, "*");
+        turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_1, "*");
+        cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_1, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[1];
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         break;
       case 2:
-        driveTalon = new TalonFX(3, "*");
-        turnTalon = new TalonFX(4, "*");
-        cancoder = new CANcoder(25, "*");
+        driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_2, "*");
+        turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_2, "*");
+        cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_2, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[2];
         isDriveMotorInverted = true;
         isTurnMotorInverted = false;
         break;
       case 3:
-        driveTalon = new TalonFX(9, "*");
-        turnTalon = new TalonFX(2, "*");
-        cancoder = new CANcoder(23, "*");
+        driveTalon = new TalonFX(DriveConstants.Module.TALON_DRIVE_MOTOR_3, "*");
+        turnTalon = new TalonFX(DriveConstants.Module.TALON_TURN_MOTOR_3, "*");
+        cancoder = new CANcoder(DriveConstants.Module.TALON_CANCODER_3, "*");
         absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[3];
         isDriveMotorInverted = false;
         isTurnMotorInverted = true;
