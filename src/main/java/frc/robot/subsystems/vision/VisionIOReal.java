@@ -25,13 +25,15 @@ public class VisionIOReal implements VisionIO {
             aprilTagFieldLayout,
             MULTI_TAG_PNP_ON_COPROCESSOR,
             frontCam,
-            frontCamToRobot);
+            frontCamFromRobot);
     }
 
+    @Override
     public void updateInputs(VisionIOInputs inputs) {
         updateEstimatedPose();
         updateVisibleToteAprilTags();
         inputs.estimatedRobotPose = estimatedRobotPose;
+        inputs.visibleToteAprilTags = visibleToteAprilTags;
     }
 
     // Updates the pose of the robot estimated by vision
@@ -50,10 +52,14 @@ public class VisionIOReal implements VisionIO {
      }
 
      public void updateVisibleToteAprilTags() {
+        // Reset the list of tote april tags to an empty one
         visibleToteAprilTags = new Transform3d[12];
+        // For every visible target...
         for(PhotonTrackedTarget target : frontCam.getLatestResult().getTargets()) {
+            // If its ID is less than 12...
             if (target.getFiducialId() < 12) {
-                visibleToteAprilTags[target.getFiducialId()] = target.getBestCameraToTarget();
+                // Set the index of its ID to the transform from the camera to the target
+                visibleToteAprilTags[target.getFiducialId()] = target.getBestCameraToTarget().plus(frontCamFromRobot);
             }
         }
      }

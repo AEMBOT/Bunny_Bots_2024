@@ -19,13 +19,17 @@ public class Vision extends SubsystemBase {
         io.updateInputs(inputs);
     }
 
-    // Returns the Pose of the robot estimated by vision, only looks at static april tags
+    /**
+     * Only looks at static april tags.
+     * @return The Pose of the robot estimated by vision.
+     */ 
     public Pose3d getVisionRobotPose() {
         return inputs.estimatedRobotPose;
     }
 
-    // Returns the transform of the tote tag that is closest to the bot relative to the bot/camera 
-    // TODO see if its relative to bot or camera
+    /** 
+     * @retyrn The transform of the tote tag that is closest to the bot relative to the center of the bot. 
+     */
     public Transform3d getTransformToClostestToteTag() {
         // Arbitrarily large transform so that all values are closer 
         Transform3d closestTagTransform = new Transform3d(1000,1000,1000, new Rotation3d());

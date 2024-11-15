@@ -47,9 +47,11 @@ public final class Constants {
 
   public static final class VisionConstants {
 
-    // List of static april tags on the field, not the ones on the totes
-    // Field layout can also be imported from a json file if we decide to do that
-    // TODO get exact values of april tag positions
+    /** 
+     * List of static april tags on the field, not including the ones on the totes.
+     * Field layout can also be imported from a json file if we decide to do that.
+     * TODO get exact values of april tag positions
+     */
     private static final List<AprilTag> fieldAprilTags = List.of(
       new AprilTag(13, 
         new Pose3d(0, 0, 0, 
@@ -76,33 +78,36 @@ public final class Constants {
         new Pose3d(0, 0, 0, 
           new Rotation3d(0, 0, 0))));
 
-    // April tag field layout, inclues the positions of all static april tags as well as the size of the field
-    // TODO confirm that length is 54 and width is 27 and not vice versa
+    /**
+     * April tag field layout, inclues the positions of all static april tags as well as the size of the field.
+     * TODO confirm that length is 54 and width is 27 and not vice versa
+     */ 
     public static final AprilTagFieldLayout aprilTagFieldLayout =
-    new AprilTagFieldLayout(fieldAprilTags, 54, 27);
+    new AprilTagFieldLayout(fieldAprilTags, 54, 27); //PLACEHOLDER VALUE
 
-    // All information pertaining to the front camera
+    // All information pertaining to the front camera.
     // TODO determine these values  
+    /** The name that connects the front camera in code to the front camera in photonvision on the rio */
     public static final String frontCamName = "front";
-    //Transform from the camera of the center of the robot
-    public static final Transform3d frontCamToRobot = new Transform3d(
+    /** Transform from the center of the robot to the front camera */
+    public static final Transform3d frontCamFromRobot = new Transform3d(
       new Translation3d(0, 0, 0),
       new Rotation3d(0, 0, 0));
-    // Vertical Resolution
+    /* *Vertical resolution of the front camera */
     public static final int frontCamVertRes = 1000;
-    // Horizontal Resolution 
+    /** Horizontal resolution of the front camera */
     public static final int frontCamHorizRes = 1000;
-    // Camera Rotation Factor (not sure exactly what this is for)
+    /** Front camera rotation offset. */
     public static final Rotation2d frontCamRotation = Rotation2d.fromDegrees(90);
-    // Pixel Error
+    /** Front camera pixel error */
     public static final double frontCamPxErr = 0;
-    // Pixel Error Standard Deviation
+    /** Standard Deviation in the pixel error of the front camera */
     public static final double frontCamPxErrStdDev = 0;
-    // Camera Frames Per Second
+    /** How many frames the front camera provides per second */
     public static final double frontCamFPS = 60;
-    // Average Latency from Camera
+    /** Average latency from the front camera */
     public static final double frontCamAvgLatency = 0;
-    // Standard Deviation in Latency
+    /** Standard deviation in the latency fro the front camera */
     public static final double frontCamLatencyStdDev = 0;
 
   }

@@ -20,17 +20,18 @@ public class VisionIOSim implements VisionIO {
     // Front Cam Sim
     private final PhotonCameraSim frontCam;
     private final PhotonPoseEstimator frontPoseEstimator;
-    public Transform3d[] visibleToteAprilTags = new Transform3d[12];
+    
     
     private Pose3d estimatedRobotPose = new Pose3d();
-
+    public Transform3d[] visibleToteAprilTags = new Transform3d[12];
+    
     public VisionIOSim() {
         PhotonCamera front = new PhotonCamera("front");
 
         frontPoseEstimator = new PhotonPoseEstimator(
             aprilTagFieldLayout,
             MULTI_TAG_PNP_ON_COPROCESSOR,
-            front, frontCamToRobot);
+            front, frontCamFromRobot);
 
         visionSim = new VisionSystemSim("main");
         visionSim.addAprilTags(aprilTagFieldLayout);
@@ -44,7 +45,7 @@ public class VisionIOSim implements VisionIO {
         
         frontCam = new PhotonCameraSim(front, frontCamProps);
 
-        visionSim.addCamera(frontCam, frontCamToRobot);
+        visionSim.addCamera(frontCam, frontCamFromRobot);
 
         frontCam.enableDrawWireframe(true);
 
@@ -53,6 +54,7 @@ public class VisionIOSim implements VisionIO {
     public void updateInputs(VisionIOInputs inputs) {
         updateEstimatedPose();
         inputs.estimatedRobotPose = estimatedRobotPose;
+        inputs.visibleToteAprilTags = visibleToteAprilTags;
     }
 
     public void updatePose(Pose2d pose) {
@@ -73,6 +75,7 @@ public class VisionIOSim implements VisionIO {
          );
      }
 
-     // update visible tote april tags is a whole ordeal for sim so im not gonna do it right now 
+     // update visible tote april tags is a whole ordeal for sim so im not gonna do it right now
+     // Likely that sim wont be used so idc about it too much :/ 
      // TODO implement tote tags to sim
 }
