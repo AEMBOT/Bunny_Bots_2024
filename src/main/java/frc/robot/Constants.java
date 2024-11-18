@@ -13,11 +13,10 @@
 
 package frc.robot;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Path;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -31,7 +30,7 @@ import edu.wpi.first.math.geometry.Translation3d;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {
+public final class Constants{
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -47,45 +46,22 @@ public final class Constants {
 
   public static final class VisionConstants {
 
-    /** 
-     * List of static april tags on the field, not including the ones on the totes.
-     * Field layout can also be imported from a json file if we decide to do that.
-     * TODO get exact values of april tag positions
-     */
-    private static final List<AprilTag> fieldAprilTags = List.of(
-      new AprilTag(13, 
-        new Pose3d(0, 0, 0, 
-          new Rotation3d(0, 0, 0))),
-     new AprilTag(14, 
-        new Pose3d(0, 0, 0, 
-          new Rotation3d(0, 0, 0))),
-     new AprilTag(15, 
-        new Pose3d(0, 0, 0, 
-          new Rotation3d(0, 0, 0))),
-      new AprilTag(16, 
-        new Pose3d(0, 0, 0, 
-          new Rotation3d(0, 0, 0))),
-     new AprilTag(17, 
-        new Pose3d(0.0, 0.0, 0.0, 
-          new Rotation3d(0.0, 0.0, 0.0))),
-     new AprilTag(18, 
-        new Pose3d(0, 0, 0, 
-          new Rotation3d(0, 0, 0))),
-     new AprilTag(19, 
-        new Pose3d(0, 0, 0, 
-          new Rotation3d(0, 0, 0))),
-     new AprilTag(20, 
-        new Pose3d(0, 0, 0, 
-          new Rotation3d(0, 0, 0))));
-
     /**
      * April tag field layout, inclues the positions of all static april tags as well as the size of the field.
-     * TODO confirm that length is 54 and width is 27 and not vice versa
      */ 
-    public static final AprilTagFieldLayout aprilTagFieldLayout =
-    new AprilTagFieldLayout(fieldAprilTags, 54, 27); //PLACEHOLDER VALUE
+    public static final AprilTagFieldLayout aprilTagFieldLayout;
+    static {
+      AprilTagFieldLayout layout = null;
+      try{
+        layout = new AprilTagFieldLayout(Path.of("src\\main\\java\\frc\\robot\\aprilTagFieldLayout.json"));
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
+      aprilTagFieldLayout = layout;
+  }
+    
 
-    // All information pertaining to the front camera.
     // TODO determine these values  
     /** The name that connects the front camera in code to the front camera in photonvision on the rio */
     public static final String frontCamName = "front";
@@ -93,6 +69,8 @@ public final class Constants {
     public static final Transform3d frontCamFromRobot = new Transform3d(
       new Translation3d(0, 0, 0),
       new Rotation3d(0, 0, 0));
+
+    // Following Values are only used for sim
     /* *Vertical resolution of the front camera */
     public static final int frontCamVertRes = 1000;
     /** Horizontal resolution of the front camera */
