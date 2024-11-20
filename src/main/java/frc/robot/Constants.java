@@ -13,9 +13,16 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 /**
@@ -39,6 +46,8 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static final double UPDATE_PERIOD = 0.2;
 
   public static final class PivotConstants { 
     /** Maximum angle for the pivot to move to, in degrees */
@@ -78,5 +87,17 @@ public final class Constants {
     public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
       2,
       5));
+    /** Ramp Rate of the pivot System ID in volts per second */
+    public static final double pivotSysIdRampRate = 0.2;
+    /** Setp Voltage of the pivot System ID in volts */
+    public static final double pivotSysIdStepVolt = 7;
+    /** Timeout of the pivot System ID in volts */
+    public static final double pivotSysIdTimeout = 30;
+    /** How many degrees the pivot can be off its goal position for it to be sufficient */
+    public static final double pivotAngleAllowedDeviance = 1.15;
+    /**  */
+    public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
+    /**  */
+    public static final double pivotDefaultAngle = 45;
   }
 }

@@ -100,4 +100,10 @@ public class PivotIOReal implements PivotIO {
 
         leadingMotor.setVoltage(volts);
     }
+
+    @Override
+    public void resetProfile() {
+        pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+    }
 }

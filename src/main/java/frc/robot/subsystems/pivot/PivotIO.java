@@ -33,4 +33,6 @@ public interface PivotIO {
     /** Run open loop at the specified voltage. */
     public default void setVoltage(double volts) {}
 
+    /** Resets the pivot goal and setpoint to the current angle of the pivot*/
+    public default void resetProfile () {}
 }
