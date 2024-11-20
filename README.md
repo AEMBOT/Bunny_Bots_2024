@@ -1,2 +1,1 @@
-# Bunny_Bots_2024
-Code relating to the 2024 Bunny Bots Season
+# Lightcycle | FRC 2024 | Crescendo

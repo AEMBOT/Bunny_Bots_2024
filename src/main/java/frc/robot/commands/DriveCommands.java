@@ -22,12 +22,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.Drive;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class DriveCommands {
+  private static final double DEADBAND = 0.05;
+  private static final double SLOWMODE_MAX_METERS_PER_SEC = 1;
+  private static final double SLOWMODE_ROTATION_SPEED_FACTOR = 0.2;
+
   private DriveCommands() {}
 
   /**
@@ -44,10 +47,10 @@ public class DriveCommands {
           // Apply deadband
           double linearMagnitude =
               MathUtil.applyDeadband(
-                  Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DriveConstants.CONTROLLER_DEADBAND);
+                  Math.hypot(xSupplier.getAsDouble(), ySupplier.getAsDouble()), DEADBAND);
           Rotation2d linearDirection =
               new Rotation2d(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DriveConstants.CONTROLLER_DEADBAND);
+          double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
 
           // Square values
           linearMagnitude = linearMagnitude * linearMagnitude;
@@ -66,14 +69,14 @@ public class DriveCommands {
           drive.runVelocity(
               ChassisSpeeds.fromFieldRelativeSpeeds(
                   slowmode.getAsBoolean()
-                      ? linearVelocity.getX() * DriveConstants.SLOWMODE_MAX_METERS_PER_SEC
-                      : linearVelocity.getX() * DriveConstants.MAX_LINEAR_SPEED,
+                      ? linearVelocity.getX() * SLOWMODE_MAX_METERS_PER_SEC
+                      : linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                   slowmode.getAsBoolean()
-                      ? linearVelocity.getY() * DriveConstants.SLOWMODE_MAX_METERS_PER_SEC
-                      : linearVelocity.getY() * DriveConstants.MAX_LINEAR_SPEED,
+                      ? linearVelocity.getY() * SLOWMODE_MAX_METERS_PER_SEC
+                      : linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                   slowmode.getAsBoolean()
-                      ? omega * DriveConstants.MAX_ANGULAR_SPEED * DriveConstants.SLOWMODE_ROTATION_SPEED_FACTOR
-                      : omega * DriveConstants.MAX_ANGULAR_SPEED,
+                      ? omega * drive.getMaxAngularSpeedRadPerSec() * SLOWMODE_ROTATION_SPEED_FACTOR
+                      : omega * drive.getMaxAngularSpeedRadPerSec(),
                   isFlipped
                       ? drive.getRotation().plus(new Rotation2d(Math.PI))
                       : drive.getRotation()));

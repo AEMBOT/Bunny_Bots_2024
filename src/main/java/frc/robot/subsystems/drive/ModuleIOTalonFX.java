@@ -14,8 +14,8 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.wpilibj.Timer.delay;
-import static frc.robot.Constants.Mode;
-import static frc.robot.Constants.DriveConstants.Module.WHEEL_RADIUS;
+import static frc.robot.Constants.currentRobot;
+import static frc.robot.subsystems.drive.Module.WHEEL_RADIUS;
 import static java.lang.Math.abs;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -33,8 +33,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants.DriveConstants;
-
 import java.util.Queue;
 
 /**
@@ -90,7 +88,11 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(7, "*");
         turnTalon = new TalonFX(8, "*");
         cancoder = new CANcoder(26, "*");
-        absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[0];
+        absoluteEncoderOffset =
+            switch (currentRobot) {
+              case CLEF -> Rotation2d.fromRadians(-0.8206797215188181 + Math.PI);
+              case LIGHTCYCLE -> Rotation2d.fromRadians(2.6537867630421594);
+            };
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         break;
@@ -98,7 +100,11 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(5, "*");
         turnTalon = new TalonFX(6, "*");
         cancoder = new CANcoder(24, "*");
-        absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[1];
+        absoluteEncoderOffset =
+            switch (currentRobot) {
+              case CLEF -> Rotation2d.fromRadians(2.4559032414049113 + Math.PI);
+              case LIGHTCYCLE -> Rotation2d.fromRadians(-2.9145634969827183 + Math.PI);
+            };
         isDriveMotorInverted = true;
         isTurnMotorInverted = true;
         break;
@@ -106,7 +112,11 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(3, "*");
         turnTalon = new TalonFX(4, "*");
         cancoder = new CANcoder(25, "*");
-        absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[2];
+        absoluteEncoderOffset =
+            switch (currentRobot) {
+              case CLEF -> Rotation2d.fromRadians(1.863786657281054);
+              case LIGHTCYCLE -> Rotation2d.fromRadians(1.0676506283684062);
+            };
         isDriveMotorInverted = true;
         isTurnMotorInverted = false;
         break;
@@ -114,7 +124,11 @@ public class ModuleIOTalonFX implements ModuleIO {
         driveTalon = new TalonFX(9, "*");
         turnTalon = new TalonFX(2, "*");
         cancoder = new CANcoder(23, "*");
-        absoluteEncoderOffset = DriveConstants.Module.absoluteEncoderOffset[3];
+        absoluteEncoderOffset =
+            switch (currentRobot) {
+              case CLEF -> Rotation2d.fromRadians(-1.4388739790367313);
+              case LIGHTCYCLE -> Rotation2d.fromRadians(-2.4298255680108560 + Math.PI);
+            };
         isDriveMotorInverted = false;
         isTurnMotorInverted = true;
         break;
@@ -138,12 +152,22 @@ public class ModuleIOTalonFX implements ModuleIO {
     driveConfig.Feedback.SensorToMechanismRatio =
         (DRIVE_GEAR_RATIO) * (1.0 / (WHEEL_RADIUS * 2 * Math.PI));
 
-    driveConfig.Slot0.kV = 2.28;
-    driveConfig.Slot0.kA = 0.08;
-    driveConfig.Slot0.kS = 0.25;
-    driveConfig.Slot0.kP = 7.5; // TODO hand tune
-    driveConfig.Slot0.kD = 0.005;
-
+    switch (currentRobot) {
+      case CLEF -> {
+        driveConfig.Slot0.kV = 2.28;
+        driveConfig.Slot0.kA = 0.08;
+        driveConfig.Slot0.kS = 0.25;
+        driveConfig.Slot0.kP = 7.5; // TODO hand tune
+        driveConfig.Slot0.kD = 0.005;
+      }
+      case LIGHTCYCLE -> {
+        driveConfig.Slot0.kV = 2.14;
+        driveConfig.Slot0.kA = 0.45;
+        driveConfig.Slot0.kS = 0.11;
+        driveConfig.Slot0.kP = 3; // TODO hand tune
+        driveConfig.Slot0.kD = 0.005;
+      }
+    }
 
     driveTalon.getConfigurator().apply(driveConfig);
     delay(0.1);
@@ -163,12 +187,22 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnConfig.Feedback.FeedbackRotorOffset =
         0.0; // Is this right? I think CANcoder config handles this
 
-
-    turnConfig.Slot0.kV = 2.5678;
-    turnConfig.Slot0.kA = 0.0;
-    turnConfig.Slot0.kS = 0.16677;
-    turnConfig.Slot0.kP = 75;
-    turnConfig.Slot0.kD = 0;
+    switch (currentRobot) {
+      case CLEF -> {
+        turnConfig.Slot0.kV = 2.5678;
+        turnConfig.Slot0.kA = 0.0;
+        turnConfig.Slot0.kS = 0.16677;
+        turnConfig.Slot0.kP = 75;
+        turnConfig.Slot0.kD = 0;
+      }
+      case LIGHTCYCLE -> {
+        turnConfig.Slot0.kV = 2.6876;
+        turnConfig.Slot0.kA = 0.0;
+        turnConfig.Slot0.kS = 0.21416;
+        turnConfig.Slot0.kP = 75;
+        turnConfig.Slot0.kD = 0;
+      }
+    }
 
     turnConfig.ClosedLoopGeneral.ContinuousWrap = true;
 
@@ -197,7 +231,7 @@ public class ModuleIOTalonFX implements ModuleIO {
     turnCurrent = turnTalon.getStatorCurrent();
 
     BaseStatusSignal.setUpdateFrequencyForAll(
-        DriveConstants.Module.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
+        Module.ODOMETRY_FREQUENCY, drivePosition, turnPosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
         100.0, // Bus is CAN FD, so consider increasing this
         driveVelocity,

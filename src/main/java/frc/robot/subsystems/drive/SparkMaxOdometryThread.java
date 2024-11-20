@@ -14,8 +14,6 @@
 package frc.robot.subsystems.drive;
 
 import edu.wpi.first.wpilibj.Notifier;
-import frc.robot.Constants.DriveConstants;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +50,7 @@ public class SparkMaxOdometryThread {
   public void start() {
     if (timestampQueues.size() > 0
         || signals.size() > 0) { // AdvantageKit WTF, what if I don't want timestamp queues
-      notifier.startPeriodic(1.0 / DriveConstants.Module.ODOMETRY_FREQUENCY);
+      notifier.startPeriodic(1.0 / Module.ODOMETRY_FREQUENCY);
     }
   }
 

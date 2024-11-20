@@ -13,8 +13,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -25,9 +30,11 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static final Mode currentMode = Mode.REAL;
+  public static final DigitalInput robotJumper = new DigitalInput(0);
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+  public static final Robot currentRobot = robotJumper.get() ? Robot.CLEF : Robot.LIGHTCYCLE;
 
-  public static enum Mode {
+  public enum Mode {
     /** Running on a real robot. */
     REAL,
 
@@ -38,29 +45,122 @@ public final class Constants {
     REPLAY
   }
 
-  public static final class DriveConstants {
-    // May need tweaking
-    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5); // MK4i L3+
-    public static final double TRACK_WIDTH_X = Units.inchesToMeters(22.75); // 28 in square chassis
-    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(22.75);
-    public static final double DRIVE_BASE_RADIUS =
-      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
-    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+  public enum Robot {
+    CLEF,
+    LIGHTCYCLE
+  }
 
-    public static final double CONTROLLER_DEADBAND = 0.05;
-    public static final double SLOWMODE_MAX_METERS_PER_SEC = 1;
-    public static final double SLOWMODE_ROTATION_SPEED_FACTOR = 0.2;
+  public static final class ClimberConstants {
+    public static final int winchMotorRightCanID = 15;
+    public static final int winchMotorLeftCanID = 14;
+    public static final int homingCurrentLimit = 40;
+    public static final int extendCurrentLimit = 60;
+    public static final double extendToGrab = 10; // change this
+    public static final double extendToPullUp = 10; // change this
+    public static final double minExtendHardStop = 0;
+    public static final double maxExtendSoftStop = 10; // change this
+    public static final double extendMetersPerTick = 0.0160734375; // change this lmao
+  }
 
-    public static final class Module {
-      public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
-      public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
+  public static final double UPDATE_PERIOD = 0.02;
 
-      public static final Rotation2d[] absoluteEncoderOffset = {
-        Rotation2d.fromRadians(-0.8206797215188181 + Math.PI), // FL
-        Rotation2d.fromRadians(2.4559032414049113 + Math.PI), // FR
-        Rotation2d.fromRadians(1.863786657281054), // BL
-        Rotation2d.fromRadians(-1.4388739790367313) // BR
-      };
+  public static final class PivotConstants {
+    public static final double PIVOT_MAX_POS_RAD = 2.20;
+    public static final double PIVOT_MIN_POS_RAD = 0.30;
+  }
+
+  public static final class IndexerConstants {
+    /* PORTS */
+    public static final int indexerMotorPortBottom = 16;
+    public static final int indexerMotorPortTop = 19;
+    public static final int indexerBeamBrake =
+        currentRobot == Robot.LIGHTCYCLE
+            ? 9
+            : 7; // They swapped the wiring to the indexer and intake sensors on Clef and there is
+    // no time to switch back
+
+    /* VOLTAGES */
+    public static final double indexerMotorVoltage = 1;
+  }
+
+  public static final class IntakeConstants {
+    public static final double noteLockTolerance = 10.0;
+    public static final int intakeMotorPortBottom = 13;
+    public static final int intakeMotorPortTop = 12;
+    public static final int intakeBeamBrake = currentRobot == Robot.LIGHTCYCLE ? 7 : 9;
+
+    /*VOLTAGES*/
+    public static final double intakeMotorVoltage = 12;
+  }
+
+  public static final class ShooterConstants {
+    public static final double shooterSpeedRPM = 7840;
+    public static final double shooterIdleRPM = 980;
+  }
+
+  public static final AprilTagFieldLayout aprilTagFieldLayout =
+      AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+  public final class FieldConstants {
+    //    public static final Translation2d BLUE_SPEAKER_POSE = new Translation2d(-0.086473,
+    // 5.757474);
+    //    public static final Translation2d RED_SPEAKER_POSE = new Translation2d(16.389722,
+    // 5.757474);
+
+    //    public static final Translation2d BLUE_SPEAKER_POSE =
+    //                    new Translation2d(-0.0381 + Units.inchesToMeters(10), 5.547868);
+    //    public static final Translation2d RED_SPEAKER_POSE =
+    //                    new Translation2d(16.579342 - Units.inchesToMeters(10), 5.547868);
+
+    public static final Translation2d BLUE_SPEAKER_POSE =
+        new Translation2d(-0.0381 - Units.inchesToMeters(2), 5.547868);
+    public static final Translation2d RED_SPEAKER_POSE =
+        new Translation2d(16.579342 + Units.inchesToMeters(2), 5.547868);
+
+    public static Translation2d getSpeaker() {
+      if (DriverStation.getAlliance().isPresent()) {
+        return DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+            ? RED_SPEAKER_POSE
+            : BLUE_SPEAKER_POSE;
+      } else {
+        return BLUE_SPEAKER_POSE; // default to blue
+      }
     }
+
+    public static final Translation2d BLUE_PASS_POSE = new Translation2d(1.5, 8.211);
+
+    public static final Translation2d RED_PASS_POSE = new Translation2d(16.541 - 1.5, 8.211 - 4.0);
+
+    public static Translation2d getPass() {
+      if (DriverStation.getAlliance().isPresent()) {
+        return DriverStation.getAlliance().get() == DriverStation.Alliance.Red
+            ? RED_PASS_POSE
+            : BLUE_PASS_POSE;
+      } else {
+        return BLUE_PASS_POSE; // default to blue
+      }
+    }
+  }
+
+  public static final class shootingSpeakerConstants {
+    public static double kP = 5;
+    public static double kI = 0;
+    public static double kD = 0.02;
+    public static double maxVelocity = 2;
+    public static double maxAcceleration = 4;
+
+    public static double[][] shooterInterpolationPoints =
+        new double[][] {
+          new double[] {1.0, 1.040},
+          new double[] {2.2, 0.847},
+          new double[] {3.0, 0.639},
+          new double[] {3.45, 0.572},
+          new double[] {3.80, 0.550},
+          new double[] {4.1, 0.532 - 0.005},
+          new double[] {4.7, 0.500 - 0.005},
+          new double[] {5.4, 0.433 - 0.005},
+          new double[] {6.4, 0.413 - 0.005},
+          new double[] {7.4, 0.380 - 0.005}
+        };
   }
 }
