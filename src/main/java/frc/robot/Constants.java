@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -21,6 +22,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -42,6 +44,49 @@ public final class Constants{
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static final class DriveConstants {
+    // May need tweaking
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5); // MK4i L3+
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(22.75); // 28 in square chassis
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(22.75);
+    public static final double DRIVE_BASE_RADIUS =
+      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+
+    public static final double CONTROLLER_DEADBAND = 0.05;
+    public static final double SLOWMODE_MAX_METERS_PER_SEC = 1;
+    public static final double SLOWMODE_ROTATION_SPEED_FACTOR = 0.2;
+
+    public static final class Module {
+      /* PORTS */
+      public static final int TALON_DRIVE_MOTOR_0 = 7;
+      public static final int TALON_TURN_MOTOR_0 = 8;
+      public static final int TALON_CANCODER_0 = 26;
+
+      public static final int TALON_DRIVE_MOTOR_1 = 5;
+      public static final int TALON_TURN_MOTOR_1 = 6;
+      public static final int TALON_CANCODER_1 = 24;
+
+      public static final int TALON_DRIVE_MOTOR_2 = 3;
+      public static final int TALON_TURN_MOTOR_2 = 4;
+      public static final int TALON_CANCODER_2 = 25;
+
+      public static final int TALON_DRIVE_MOTOR_3 = 9;
+      public static final int TALON_TURN_MOTOR_3 = 2;
+      public static final int TALON_CANCODER_3 = 23;
+
+      public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
+      public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
+
+      public static final Rotation2d[] absoluteEncoderOffset = {
+        Rotation2d.fromRadians(-0.8206797215188181 + Math.PI), // FL
+        Rotation2d.fromRadians(2.4559032414049113 + Math.PI), // FR
+        Rotation2d.fromRadians(1.863786657281054), // BL
+        Rotation2d.fromRadians(-1.4388739790367313) // BR
+      };
+    }
   }
 
   /** Constants used primarily for the vision subsystem */
@@ -134,6 +179,5 @@ public final class Constants{
     public static final double leftCamAvgLatency = 0;
     /** Standard deviation in the latency fro the left camera */
     public static final double leftCamLatencyStdDev = 0;
-
   }
 }
