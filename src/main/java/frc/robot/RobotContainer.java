@@ -19,12 +19,15 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.DriveIO;
-import frc.robot.subsystems.drive.DriveIOReal;
-import frc.robot.subsystems.drive.DriveIOSim;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIONavX;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.loader.LoaderIO;
-import frc.robot.subsystems.loader.LoaderIOReal;
+import frc.robot.subsystems.loader.LoaderIOSparkMax;
 import frc.robot.subsystems.loader.LoaderIOSim;
 import frc.robot.subsystems.loader.Loader;
 import frc.robot.subsystems.pivot.Pivot;
@@ -35,6 +38,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOReal;
 import frc.robot.subsystems.vision.VisionIOSim;
+import frc.robot.commands.DriveCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -43,12 +47,15 @@ import frc.robot.subsystems.vision.VisionIOSim;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-      // Subsystems
+    // Subsystems
     private final Drive drive;
     private final Pivot pivot;
     private final Loader loader;
     private final Vision vision;
+
+    // Controller
+    private final CommandXboxController controller = new CommandXboxController(0);
+    private final CommandXboxController backupController = new CommandXboxController(1);
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
@@ -56,21 +63,40 @@ public class RobotContainer {
     public RobotContainer() {
         switch (Constants.currentMode) {
             case REAL:
-                drive = new Drive(new DriveIOReal());
+                drive = new Drive(
+                  new GyroIONavX(),
+                  new ModuleIOTalonFX(0),
+                  new ModuleIOTalonFX(1),
+                  new ModuleIOTalonFX(2),
+                  new ModuleIOTalonFX(3)
+                );
                 pivot = new Pivot(new PivotIOReal());
-                loader = new Loader(new LoaderIOReal());
+                loader = new Loader(new LoaderIOSparkMax());
                 vision = new Vision(new VisionIOReal());
                 break;
             
             case SIM:
-                drive = new Drive(new DriveIOSim());
+                drive = new Drive(
+                  new GyroIO() {},
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim(),
+                  new ModuleIOSim()
+                  );
                 pivot = new Pivot(new PivotIOSim());
                 loader = new Loader(new LoaderIOSim());
                 vision = new Vision(new VisionIOSim());
                 break;
 
             default:
-                drive = new Drive(new DriveIO() {});
+                // Replayed robot, disable IO implementations
+                drive = new Drive(
+                  new GyroIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {},
+                  new ModuleIO() {}
+                );
                 pivot = new Pivot(new PivotIO() {});
                 loader = new Loader(new LoaderIO() {});
                 vision = new Vision(new VisionIO() {});
@@ -79,6 +105,8 @@ public class RobotContainer {
 
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+        // Configure the button bindings
+        configureButtonBindings();
     }
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
@@ -87,7 +115,17 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-   
+    loader.setDefaultCommand(loader.intakeCommand());
+
+    controller.rightBumper().whileTrue(loader.ejectCommand());
+
+    drive.setDefaultCommand(
+      DriveCommands.joystickDrive(
+          drive,
+          () -> -controller.getLeftY(),
+          () -> -controller.getLeftX(),
+          () -> -controller.getRightX(),
+          () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger boolean, rather than analog.
   }
 
   /**
