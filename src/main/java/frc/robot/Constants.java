@@ -19,11 +19,14 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -47,7 +50,7 @@ public final class Constants {
     REPLAY
   }
 
-  public static final double UPDATE_PERIOD = 0.2;
+  public static final double UPDATE_PERIOD = 0.02;
 
   public static final class PivotConstants { 
     /** Maximum angle for the pivot to move to, in degrees */
@@ -99,5 +102,19 @@ public final class Constants {
     public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
     /**  */
     public static final double pivotDefaultAngle = 45;
+    /**  */
+    public static final double pivotSimGoalPosition = 1.05;
+    /**  */
+    public static final double pivotSimSetpointPosition = 1.05;
+    /**  */
+    public static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(
+      DCMotor.getNEO(2), 
+      300, 
+      0.17, 
+      0.500, 
+      Units.degreesToRadians(pivotMinAngle), 
+      Units.degreesToRadians(pivotMaxAngle), 
+      true, 
+      Units.degreesToRadians(45));
   }
 }
