@@ -46,6 +46,15 @@ public final class Constants{
     REPLAY
   }
 
+  public static class LoaderConstants {
+    /* PORTS */
+    public static final int MOTOR_PORT = -1; // PLACEHOLDER VALUE
+    /* Voltages */
+    public static final double MOTOR_VOLTAGE = 1.0; // PLACEHOLDER VALUE
+    /* CURRENT LIMITS */
+    public static final int MOTOR_CURRENT_LIMIT = 5; // PLACEHOLDER VALUE
+  }
+  
   public static final class DriveConstants {
     // May need tweaking
     public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5); // MK4i L3+

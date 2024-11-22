@@ -27,7 +27,7 @@ import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.loader.LoaderIO;
-import frc.robot.subsystems.loader.LoaderIOReal;
+import frc.robot.subsystems.loader.LoaderIOSparkMax;
 import frc.robot.subsystems.loader.LoaderIOSim;
 import frc.robot.subsystems.loader.Loader;
 import frc.robot.subsystems.pivot.Pivot;
@@ -71,7 +71,7 @@ public class RobotContainer {
                   new ModuleIOTalonFX(3)
                 );
                 pivot = new Pivot(new PivotIOReal());
-                loader = new Loader(new LoaderIOReal());
+                loader = new Loader(new LoaderIOSparkMax());
                 vision = new Vision(new VisionIOReal());
                 break;
             
@@ -115,6 +115,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    loader.setDefaultCommand(loader.intakeCommand());
+
+    controller.rightBumper().whileTrue(loader.ejectCommand());
+
     drive.setDefaultCommand(
       DriveCommands.joystickDrive(
           drive,
