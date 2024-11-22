@@ -13,6 +13,20 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.math.geometry.Rotation2d;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -46,6 +60,74 @@ public final class Constants{
     REPLAY
   }
 
+  public static final double UPDATE_PERIOD = 0.02;
+
+  public static final class PivotConstants { 
+    /** Maximum angle for the pivot to move to, in degrees */
+    public static final double pivotMaxAngle = 90;
+    /** Minimum angle for the pivot to move to, in degrees */
+    public static final double pivotMinAngle = 0;
+    /** ID of the left pivot sparkmax */
+    public static final int pivotLeftMotorID = 0;
+    /**  */
+    public static final boolean pivotLeftMotorInverted = false;
+    /**  */
+    public static final int pivotLeftMotorCurrentLimit = 60;
+    /** ID of the right pivot sparkmax */
+    public static final int pivotRightMotorID = 0;
+    /**  */
+    public static final boolean pivotRightMotorInverted = false;
+    /**  */
+    public static final int pivotRightMotorCurrentLimit = 60;
+    /**  */
+    public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(3);
+    /**  */
+    public static final double pivotEncoderPositionOffset = 4.04433682 / (2 * Math.PI);
+    /**  */
+    public static final double gearRatio = 93.3333333;
+    /**  */
+    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
+      0.35, 
+      0.35, 
+      1.79, 
+      0.3);
+    /**  */
+    public static final PIDController pivotPIDController = new PIDController(
+      12, 
+      0, 
+      0.00);
+    /**  */
+    public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+      2,
+      5));
+    /** Ramp Rate of the pivot System ID in volts per second */
+    public static final double pivotSysIdRampRate = 0.2;
+    /** Setp Voltage of the pivot System ID in volts */
+    public static final double pivotSysIdStepVolt = 7;
+    /** Timeout of the pivot System ID in volts */
+    public static final double pivotSysIdTimeout = 30;
+    /** How many degrees the pivot can be off its goal position for it to be sufficient */
+    public static final double pivotAngleAllowedDeviance = 1.15;
+    /**  */
+    public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
+    /**  */
+    public static final double pivotDefaultAngle = 45;
+    /**  */
+    public static final double pivotSimGoalPosition = 1.05;
+    /**  */
+    public static final double pivotSimSetpointPosition = 1.05;
+    /**  */
+    public static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(
+      DCMotor.getNEO(2), 
+      300, 
+      0.17, 
+      0.500, 
+      Units.degreesToRadians(pivotMinAngle), 
+      Units.degreesToRadians(pivotMaxAngle), 
+      true, 
+      Units.degreesToRadians(45));
+  }
+  
   public static class LoaderConstants {
     /* PORTS */
     public static final int MOTOR_PORT = -1; // PLACEHOLDER VALUE
