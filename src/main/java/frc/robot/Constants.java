@@ -87,6 +87,7 @@ public final class Constants{
         Rotation2d.fromRadians(-1.4388739790367313) // BR
       };
     }
+  }
 
   /** Constants used primarily for the vision subsystem */
   public static final class VisionConstants {
