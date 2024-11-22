@@ -21,11 +21,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIONavX;
-import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOTalonFX;
-import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.DriveIO;
+import frc.robot.subsystems.drive.DriveIOReal;
+import frc.robot.subsystems.drive.DriveIOSim;
 import frc.robot.subsystems.loader.LoaderIO;
 import frc.robot.subsystems.loader.LoaderIOSparkMax;
 import frc.robot.subsystems.loader.LoaderIOSim;
@@ -38,7 +36,6 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOReal;
 import frc.robot.subsystems.vision.VisionIOSim;
-import frc.robot.commands.DriveCommands;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,7 +44,8 @@ import frc.robot.commands.DriveCommands;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    // Subsystems
+
+      // Subsystems
     private final Drive drive;
     private final Pivot pivot;
     private final Loader loader;
@@ -63,40 +61,21 @@ public class RobotContainer {
     public RobotContainer() {
         switch (Constants.currentMode) {
             case REAL:
-                drive = new Drive(
-                  new GyroIONavX(),
-                  new ModuleIOTalonFX(0),
-                  new ModuleIOTalonFX(1),
-                  new ModuleIOTalonFX(2),
-                  new ModuleIOTalonFX(3)
-                );
+                drive = new Drive(new DriveIOReal());
                 pivot = new Pivot(new PivotIOReal());
                 loader = new Loader(new LoaderIOSparkMax());
                 vision = new Vision(new VisionIOReal());
                 break;
             
             case SIM:
-                drive = new Drive(
-                  new GyroIO() {},
-                  new ModuleIOSim(),
-                  new ModuleIOSim(),
-                  new ModuleIOSim(),
-                  new ModuleIOSim()
-                  );
+                drive = new Drive(new DriveIOSim());
                 pivot = new Pivot(new PivotIOSim());
                 loader = new Loader(new LoaderIOSim());
                 vision = new Vision(new VisionIOSim());
                 break;
 
             default:
-                // Replayed robot, disable IO implementations
-                drive = new Drive(
-                  new GyroIO() {},
-                  new ModuleIO() {},
-                  new ModuleIO() {},
-                  new ModuleIO() {},
-                  new ModuleIO() {}
-                );
+                drive = new Drive(new DriveIO() {});
                 pivot = new Pivot(new PivotIO() {});
                 loader = new Loader(new LoaderIO() {});
                 vision = new Vision(new VisionIO() {});
@@ -105,7 +84,6 @@ public class RobotContainer {
 
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-        // Configure the button bindings
         configureButtonBindings();
     }
   /**
@@ -115,17 +93,10 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    // Is this the right method for defaults? It was used for such in the FRC 2024 codebase.
     loader.setDefaultCommand(loader.intakeCommand());
 
     controller.rightBumper().whileTrue(loader.ejectCommand());
-
-    drive.setDefaultCommand(
-      DriveCommands.joystickDrive(
-          drive,
-          () -> -controller.getLeftY(),
-          () -> -controller.getLeftX(),
-          () -> -controller.getRightX(),
-          () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger boolean, rather than analog.
   }
 
   /**
