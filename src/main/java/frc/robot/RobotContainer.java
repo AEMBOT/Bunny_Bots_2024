@@ -126,6 +126,16 @@ public class RobotContainer {
           () -> -controller.getLeftX(),
           () -> -controller.getRightX(),
           () -> controller.getLeftTriggerAxis() > 0.5)); // Trigger locks make trigger boolean, rather than analog.
+
+    // Manual Pivot Movement
+    controller
+      .povUp()
+      .whileTrue(pivot.changeGoalPosition(0.5))
+      .onFalse(pivot.changeGoalPosition(0.0));
+    controller
+      .povDown()
+      .whileTrue(pivot.changeGoalPosition(-0.5))
+      .onFalse(pivot.changeGoalPosition(0.0));
   }
 
   /**
