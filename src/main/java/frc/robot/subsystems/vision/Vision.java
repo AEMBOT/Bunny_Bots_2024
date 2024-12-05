@@ -28,7 +28,7 @@ public class Vision extends SubsystemBase {
     }
 
     /** 
-     * @return The transform of the tote tag that is closest to the bot relative to the center of the bot. 
+     * @retyrn The transform of the tote tag that is closest to the bot relative to the center of the bot. 
      */
     public Transform3d getTransformToClostestToteTag() {
         // Arbitrarily large transform so that all values are closer 
