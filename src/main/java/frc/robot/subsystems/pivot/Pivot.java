@@ -42,7 +42,7 @@ public class Pivot extends SubsystemBase {
                     Volts.of(pivotSysIdStepVolt),
                     Seconds.of(pivotSysIdTimeout),
                 (state) -> Logger.recordOutput("Pivot?SysIdState", state.toString())),
-                new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, null));
+                new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
     }
 
     public void periodic() {
