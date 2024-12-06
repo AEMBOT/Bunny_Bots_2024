@@ -13,6 +13,21 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.math.geometry.Rotation2d;
 import java.io.IOException;
 import java.nio.file.Path;
 
@@ -21,6 +36,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -42,6 +58,126 @@ public final class Constants{
 
     /** Replaying from a log file. */
     REPLAY
+  }
+
+  public static final double UPDATE_PERIOD = 0.02;
+
+  public static final class PivotConstants { 
+    /** Maximum angle for the pivot to move to, in degrees */
+    public static final double pivotMaxAngle = 90;
+    /** Minimum angle for the pivot to move to, in degrees */
+    public static final double pivotMinAngle = 0;
+    /** ID of the left pivot sparkmax */
+    public static final int pivotLeftMotorID = 0;
+    /**  */
+    public static final boolean pivotLeftMotorInverted = false;
+    /**  */
+    public static final int pivotLeftMotorCurrentLimit = 60;
+    /** ID of the right pivot sparkmax */
+    public static final int pivotRightMotorID = 0;
+    /**  */
+    public static final boolean pivotRightMotorInverted = false;
+    /**  */
+    public static final int pivotRightMotorCurrentLimit = 60;
+    /**  */
+    public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(3);
+    /**  */
+    public static final double pivotEncoderPositionOffset = 4.04433682 / (2 * Math.PI);
+    /**  */
+    public static final double gearRatio = 93.3333333;
+    /**  */
+    public static final ArmFeedforward pivotFFModel = new ArmFeedforward(
+      0.35, 
+      0.35, 
+      1.79, 
+      0.3);
+    /**  */
+    public static final PIDController pivotPIDController = new PIDController(
+      12, 
+      0, 
+      0.00);
+    /**  */
+    public static final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(
+      2,
+      5));
+    /** Ramp Rate of the pivot System ID in volts per second */
+    public static final double pivotSysIdRampRate = 0.2;
+    /** Setp Voltage of the pivot System ID in volts */
+    public static final double pivotSysIdStepVolt = 7;
+    /** Timeout of the pivot System ID in volts */
+    public static final double pivotSysIdTimeout = 30;
+    /** How many degrees the pivot can be off its goal position for it to be sufficient */
+    public static final double pivotAngleAllowedDeviance = 1.15;
+    /**  */
+    public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
+    /**  */
+    public static final double pivotDefaultAngle = 45;
+    /**  */
+    public static final double pivotSimGoalPosition = 1.05;
+    /**  */
+    public static final double pivotSimSetpointPosition = 1.05;
+    /**  */
+    public static final SingleJointedArmSim pivotSim = new SingleJointedArmSim(
+      DCMotor.getNEO(2), 
+      300, 
+      0.17, 
+      0.500, 
+      Units.degreesToRadians(pivotMinAngle), 
+      Units.degreesToRadians(pivotMaxAngle), 
+      true, 
+      Units.degreesToRadians(45));
+  }
+  
+  public static class LoaderConstants {
+    /* PORTS */
+    public static final int MOTOR_PORT = -1; // PLACEHOLDER VALUE
+    /* Voltages */
+    public static final double MOTOR_VOLTAGE = 1.0; // PLACEHOLDER VALUE
+    /* CURRENT LIMITS */
+    public static final int MOTOR_CURRENT_LIMIT = 5; // PLACEHOLDER VALUE
+  }
+  
+  public static final class DriveConstants {
+    // May need tweaking
+    public static final double MAX_LINEAR_SPEED = Units.feetToMeters(18.5); // MK4i L3+
+    public static final double TRACK_WIDTH_X = Units.inchesToMeters(22.75); // 28 in square chassis
+    public static final double TRACK_WIDTH_Y = Units.inchesToMeters(22.75);
+    public static final double DRIVE_BASE_RADIUS =
+      Math.hypot(TRACK_WIDTH_X / 2.0, TRACK_WIDTH_Y / 2.0);
+    public static final double MAX_ANGULAR_SPEED = MAX_LINEAR_SPEED / DRIVE_BASE_RADIUS;
+
+    public static final double CONTROLLER_DEADBAND = 0.05;
+    public static final double SLOWMODE_MAX_METERS_PER_SEC = 1;
+    public static final double SLOWMODE_ROTATION_SPEED_FACTOR = 0.2;
+
+    public static final class Module {
+      /* PORTS */
+      public static final int TALON_DRIVE_MOTOR_0 = 7;
+      public static final int TALON_TURN_MOTOR_0 = 8;
+      public static final int TALON_CANCODER_0 = 26;
+
+      public static final int TALON_DRIVE_MOTOR_1 = 5;
+      public static final int TALON_TURN_MOTOR_1 = 6;
+      public static final int TALON_CANCODER_1 = 24;
+
+      public static final int TALON_DRIVE_MOTOR_2 = 3;
+      public static final int TALON_TURN_MOTOR_2 = 4;
+      public static final int TALON_CANCODER_2 = 25;
+
+      public static final int TALON_DRIVE_MOTOR_3 = 9;
+      public static final int TALON_TURN_MOTOR_3 = 2;
+      public static final int TALON_CANCODER_3 = 23;
+
+      public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
+      public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
+
+      public static final Rotation2d[] absoluteEncoderOffset = {
+        Rotation2d.fromRadians(-0.8206797215188181 + Math.PI), // FL
+        Rotation2d.fromRadians(2.4559032414049113 + Math.PI), // FR
+        Rotation2d.fromRadians(1.863786657281054), // BL
+        Rotation2d.fromRadians(-1.4388739790367313) // BR
+      };
+    }
   }
 
   /** Constants used primarily for the vision subsystem */
@@ -134,6 +270,5 @@ public final class Constants{
     public static final double leftCamAvgLatency = 0;
     /** Standard deviation in the latency fro the left camera */
     public static final double leftCamLatencyStdDev = 0;
-
   }
 }
