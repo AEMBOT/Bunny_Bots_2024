@@ -25,6 +25,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -47,6 +48,8 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants{
+  public static final DigitalInput robotJumper = new DigitalInput(0);
+  public static final Robot currentRobot = robotJumper.get() ? Robot.BUNNYBOT : Robot.LIGHTCYCLE;
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -60,6 +63,11 @@ public final class Constants{
     REPLAY
   }
 
+  public enum Robot {
+    BUNNYBOT,
+    LIGHTCYCLE
+  }
+
   public static final double UPDATE_PERIOD = 0.02;
 
   public static final class PivotConstants { 
@@ -68,13 +76,17 @@ public final class Constants{
     /** Minimum angle for the pivot to move to, in degrees */
     public static final double pivotMinAngle = 0;
     /** ID of the left pivot sparkmax */
-    public static final int pivotLeftMotorID = 0;
+    public static final int pivotLeftMotorID = currentRobot == Robot.BUNNYBOT
+      ? -1
+      : 1000;
     /**  */
     public static final boolean pivotLeftMotorInverted = false;
     /**  */
     public static final int pivotLeftMotorCurrentLimit = 60;
     /** ID of the right pivot sparkmax */
-    public static final int pivotRightMotorID = 0;
+    public static final int pivotRightMotorID = currentRobot == Robot.BUNNYBOT
+      ? -1
+      : 1001;
     /**  */
     public static final boolean pivotRightMotorInverted = false;
     /**  */
@@ -130,7 +142,9 @@ public final class Constants{
   
   public static class LoaderConstants {
     /* PORTS */
-    public static final int MOTOR_PORT = -1; // PLACEHOLDER VALUE
+    public static final int MOTOR_PORT = currentRobot == Robot.BUNNYBOT
+      ? -1
+      : 1003; // PLACEHOLDER VALUE
     /* Voltages */
     public static final double MOTOR_VOLTAGE = 1.0; // PLACEHOLDER VALUE
     /* CURRENT LIMITS */
@@ -171,11 +185,19 @@ public final class Constants{
       public static final double WHEEL_RADIUS = Units.inchesToMeters(1.906);
       public static final double ODOMETRY_FREQUENCY = 200.0; // default 250, limited to 200 by NavX
 
-      public static final Rotation2d[] absoluteEncoderOffset = {
-        Rotation2d.fromRadians(-0.8206797215188181 + Math.PI), // FL
-        Rotation2d.fromRadians(2.4559032414049113 + Math.PI), // FR
-        Rotation2d.fromRadians(1.863786657281054), // BL
-        Rotation2d.fromRadians(-1.4388739790367313) // BR
+      public static final Rotation2d[] absoluteEncoderOffset = switch (currentRobot) {
+        case BUNNYBOT -> new Rotation2d[] {
+          Rotation2d.fromRadians(-0.8206797215188181 + Math.PI), // FL
+          Rotation2d.fromRadians(2.4559032414049113 + Math.PI), // FR
+          Rotation2d.fromRadians(1.863786657281054), // BL
+          Rotation2d.fromRadians(-1.4388739790367313) // BR
+        };
+        case LIGHTCYCLE -> new Rotation2d[] { // This is not currently correct
+          Rotation2d.fromRadians(2.6537867630421594), // FL
+          Rotation2d.fromRadians(-2.9145634969827183 + Math.PI), // FR
+          Rotation2d.fromRadians(1.0676506283684062), // BL
+          Rotation2d.fromRadians(-2.4298255680108560 + Math.PI) // BR
+        };
       };
     }
   }
@@ -201,23 +223,52 @@ public final class Constants{
     /** The name that connects the front camera in code to the front camera in photonvision on the rio */
     public static final String frontCamName = "front";
     /** Transform from the center of the robot to the front camera */
-    public static final Transform3d frontCamFromRobot = new Transform3d(
-      new Translation3d(0, 0, 0),
-      new Rotation3d(0, 0, 0));
+    public static final Transform3d frontCamFromRobot = switch (currentRobot) {
+      case BUNNYBOT -> new Transform3d(
+          new Translation3d(0, 0, 0),
+          new Rotation3d(0, 0, 0)
+      );
+      case LIGHTCYCLE -> new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(11.32), Units.inchesToMeters(7.08), Units.inchesToMeters(7.8)),
+        new Rotation3d(Units.degreesToRadians(180), Units.degreesToRadians(-30), 0.0));
+    };
 
     /** The name that connects the right camera in code to the right camera in photonvision on the rio */
     public static final String rightCamName = "right";
     /** Transform from the center of the robot to the right camera */
-    public static final Transform3d rightCamFromRobot = new Transform3d(
-      new Translation3d(0, 0, 0),
-      new Rotation3d(0, 0, 0));
+    public static final Transform3d rightCamFromRobot = switch (currentRobot) {
+      case BUNNYBOT -> new Transform3d(
+        new Translation3d(0, 0, 0),
+        new Rotation3d(0, 0, 0));
+      case LIGHTCYCLE -> new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(-12.01),
+            Units.inchesToMeters(-11.65),
+            Units.inchesToMeters(10.58)),
+        new Rotation3d(
+            Units.degreesToRadians(180),
+            Units.degreesToRadians(-23.5),
+            Units.degreesToRadians(-147)));
+    };
 
     /** The name that connects the left camera in code to the left camera in photonvision on the rio */
     public static final String leftCamName = "left";
     /** Transform from the center of the robot to the left camera */
-    public static final Transform3d leftCamFromRobot = new Transform3d(
-      new Translation3d(0, 0, 0),
-      new Rotation3d(0, 0, 0));
+    public static final Transform3d leftCamFromRobot = switch (currentRobot) {
+      case BUNNYBOT -> new Transform3d(
+        new Translation3d(0, 0, 0),
+        new Rotation3d(0, 0, 0));
+      case LIGHTCYCLE -> new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(-12.01),
+            Units.inchesToMeters(11.65),
+            Units.inchesToMeters(10.58)),
+        new Rotation3d(
+            Units.degreesToRadians(180),
+            Units.degreesToRadians(-23.5),
+            Units.degreesToRadians(147)));
+    };
 
     // Following Values are only used for sim
     /* *Vertical resolution of the front camera */
