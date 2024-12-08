@@ -63,7 +63,7 @@ public final class Constants{
     REPLAY
   }
 
-  enum Robot {
+  public enum Robot {
     BUNNYBOT,
     LIGHTCYCLE
   }
@@ -78,7 +78,7 @@ public final class Constants{
     /** ID of the left pivot sparkmax */
     public static final int pivotLeftMotorID = currentRobot == Robot.BUNNYBOT
       ? -1
-      : -1;
+      : 1000;
     /**  */
     public static final boolean pivotLeftMotorInverted = false;
     /**  */
@@ -86,7 +86,7 @@ public final class Constants{
     /** ID of the right pivot sparkmax */
     public static final int pivotRightMotorID = currentRobot == Robot.BUNNYBOT
       ? -1
-      : -1;
+      : 1001;
     /**  */
     public static final boolean pivotRightMotorInverted = false;
     /**  */
@@ -144,7 +144,7 @@ public final class Constants{
     /* PORTS */
     public static final int MOTOR_PORT = currentRobot == Robot.BUNNYBOT
       ? -1
-      : -1; // PLACEHOLDER VALUE
+      : 1003; // PLACEHOLDER VALUE
     /* Voltages */
     public static final double MOTOR_VOLTAGE = 1.0; // PLACEHOLDER VALUE
     /* CURRENT LIMITS */
@@ -192,7 +192,7 @@ public final class Constants{
           Rotation2d.fromRadians(1.863786657281054), // BL
           Rotation2d.fromRadians(-1.4388739790367313) // BR
         };
-        case LIGHTCYCLE -> new Rotation2d[] {
+        case LIGHTCYCLE -> new Rotation2d[] { // This is not currently correct
           Rotation2d.fromRadians(2.6537867630421594), // FL
           Rotation2d.fromRadians(-2.9145634969827183 + Math.PI), // FR
           Rotation2d.fromRadians(1.0676506283684062), // BL
