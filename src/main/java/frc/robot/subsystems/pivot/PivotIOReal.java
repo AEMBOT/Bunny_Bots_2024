@@ -17,8 +17,8 @@ public class PivotIOReal implements PivotIO {
     private boolean openLoop = true;
     private final CANSparkMax leadingMotor = new CANSparkMax(pivotLeftMotorID, MotorType.kBrushless);
     private final CANSparkMax followingMotor = new CANSparkMax(pivotRightMotorID, MotorType.kBrushless);
-    private TrapezoidProfile.State pivotGoal;
-    private TrapezoidProfile.State pivotSetpoint;
+    private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
+    private TrapezoidProfile.State pivotSetpoint = new TrapezoidProfile.State();
     private double lastTime;
 
 
@@ -37,6 +37,8 @@ public class PivotIOReal implements PivotIO {
 
         leadingMotor.setSmartCurrentLimit(pivotLeftMotorCurrentLimit);
         followingMotor.setSmartCurrentLimit(pivotRightMotorCurrentLimit);
+
+        followingMotor.follow(leadingMotor, true);
 
         pivotEncoder.setPositionOffset(pivotEncoderPositionOffset);
 
