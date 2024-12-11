@@ -21,6 +21,8 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -33,6 +35,7 @@ public class Robot extends LoggedRobot {
   private String autoSelected;
   private final LoggedDashboardChooser<String> chooser =
       new LoggedDashboardChooser<>("Auto Choices");
+  private RobotContainer robotContainer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -89,11 +92,15 @@ public class Robot extends LoggedRobot {
     // Initialize auto chooser
     chooser.addDefaultOption("Default Auto", defaultAuto);
     chooser.addOption("My Auto", customAuto);
+
+    robotContainer = new RobotContainer();
   }
 
   /** This function is called periodically during all modes. */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+  }
 
   /** This function is called once when autonomous is enabled. */
   @Override

@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.currentRobot;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -70,8 +72,15 @@ public class RobotContainer {
                   new ModuleIOTalonFX(2),
                   new ModuleIOTalonFX(3)
                 );
-                pivot = new Pivot(new PivotIOReal());
-                loader = new Loader(new LoaderIOSparkMax());
+                // Ensures that the pivot and loader subsystems arent used while running on lightcycle
+                pivot = new Pivot(switch (currentRobot) {
+                                    case BUNNYBOT -> new PivotIOReal();
+                                    case LIGHTCYCLE -> new PivotIO() {};
+                                  });
+                loader = new Loader(switch (currentRobot) {
+                                    case BUNNYBOT -> new LoaderIOSparkMax();
+                                    case LIGHTCYCLE -> new LoaderIO() {};
+                                  });
                 vision = new Vision(new VisionIOReal());
                 break;
             
