@@ -14,10 +14,13 @@ import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import edu.wpi.first.math.geometry.Rotation2d;
 import java.io.IOException;
 import java.nio.file.Path;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo.None;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -36,7 +39,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants{
   public static final DigitalInput robotJumper = new DigitalInput(0);
-  public static final Robot currentRobot = robotJumper.get() ? Robot.BUNNYBOT : Robot.LIGHTCYCLE;
+  public static final Robot currentRobot = Robot.BUNNYBOT;
   public static final Mode currentMode = Mode.REAL;
 
   public static enum Mode {
@@ -64,16 +67,16 @@ public final class Constants{
     public static final double pivotMinAngle = 0;
     /** ID of the left pivot sparkmax */
     public static final int pivotLeftMotorID = currentRobot == Robot.BUNNYBOT
-      ? -1
-      : 1000;
+      ? 10
+      : 0; // unused on llightcycle
     /**  */
     public static final boolean pivotLeftMotorInverted = false;
     /**  */
     public static final int pivotLeftMotorCurrentLimit = 60;
     /** ID of the right pivot sparkmax */
     public static final int pivotRightMotorID = currentRobot == Robot.BUNNYBOT
-      ? -1
-      : 1001;
+      ? 11
+      : 0; // unused on llightcycle
     /**  */
     public static final boolean pivotRightMotorInverted = false;
     /**  */
@@ -130,8 +133,8 @@ public final class Constants{
   public static class LoaderConstants {
     /* PORTS */
     public static final int MOTOR_PORT = currentRobot == Robot.BUNNYBOT
-      ? -1
-      : 1003; // PLACEHOLDER VALUE
+      ? 15
+      : 0; // unused on llightcycle
     /* Voltages */
     public static final double MOTOR_VOLTAGE = 1.0; // PLACEHOLDER VALUE
     /* CURRENT LIMITS */
@@ -174,10 +177,10 @@ public final class Constants{
 
       public static final Rotation2d[] absoluteEncoderOffset = switch (currentRobot) {
         case BUNNYBOT -> new Rotation2d[] {
-          Rotation2d.fromRadians(-0.8206797215188181 + Math.PI), // FL
-          Rotation2d.fromRadians(2.4559032414049113 + Math.PI), // FR
-          Rotation2d.fromRadians(1.863786657281054), // BL
-          Rotation2d.fromRadians(-1.4388739790367313) // BR
+          Rotation2d.fromRadians(2.2488158350403498), // FL
+          Rotation2d.fromRadians(2.462039164556454 + Math.PI), // FR
+          Rotation2d.fromRadians(1.945087639038993), // BL
+          Rotation2d.fromRadians(1.6428934238255217 + Math.PI) // BR
         };
         case LIGHTCYCLE -> new Rotation2d[] { // This is not currently correct
           Rotation2d.fromRadians(2.6599226861937018), // FL
@@ -197,7 +200,7 @@ public final class Constants{
     static {
       AprilTagFieldLayout layout = null;
       try{
-        layout = new AprilTagFieldLayout(Path.of("src\\main\\java\\frc\\robot\\aprilTagFieldLayout.json"));
+        layout = new AprilTagFieldLayout(Path.of(Filesystem.getDeployDirectory().toURI() + "\\aprilTagFieldLayout"));
       }
       catch (IOException e) {
         e.printStackTrace();

@@ -58,9 +58,11 @@ public class VisionIOReal implements VisionIO {
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
-
-        updateEstimatedPose();
-        updateVisibleToteAprilTags();
+        
+        if (aprilTagFieldLayout != null) {
+            updateEstimatedPose();
+            updateVisibleToteAprilTags();
+        }
 
         inputs.estimatedRobotPose = estimatedRobotPose;
         inputs.visibleToteAprilTags = visibleToteAprilTags;
@@ -113,7 +115,7 @@ public class VisionIOReal implements VisionIO {
      }
 
      public void updateVisibleToteAprilTags() {
-        // Reset the list of tote april tags to an empty one
+        // Reset the list of t10ote april tags to an empty one
         visibleToteAprilTags = new Transform3d[12];
 
         visibleToteAprilTags = getUpdatedIndividualCameraVisibleToteAprilTags(frontCam, frontCamFromRobot, visibleToteAprilTags);
