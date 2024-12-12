@@ -18,9 +18,20 @@ import static frc.robot.Constants.currentRobot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
+import java.util.List;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -113,6 +124,29 @@ public class RobotContainer {
         }
 
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+        /* AUTO */
+        PathConstraints autoConstraints = new PathConstraints(5, 2.5, Math.PI, 1); // Arbitrary. Probably adjust.
+
+        // Mobility
+        List<Translation2d> mobilityAutoWaypoints = PathPlannerPath.bezierFromPoses(
+          new Pose2d(5.0, 4.0, Rotation2d.fromDegrees(0))
+        );
+
+        PathPlannerPath mobilityAutoPath = new PathPlannerPath(
+          mobilityAutoWaypoints,
+          autoConstraints,
+          new GoalEndState(0.0, null)
+        );
+
+        NamedCommands.registerCommand(
+            "MobilityAuto",
+            Commands.runOnce(() -> drive.setPose(new Pose2d(7, 4, new Rotation2d(Math.PI))))
+            .andThen(AutoBuilder.followPath(mobilityAutoPath))
+          );
+
+        // Add autos to autoChooser
+        autoChooser.addOption("Mobility" ,NamedCommands.getCommand("MobilityAuto"));
 
         // Configure the button bindings
         configureButtonBindings();
