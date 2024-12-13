@@ -124,9 +124,13 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    loader.setDefaultCommand(loader.intakeCommand());
+   // loader.setDefaultCommand(loader.intakeCommand());
+    pivot.setDefaultCommand(pivot.getDefault());
 
-    controller.rightBumper().whileTrue(loader.ejectCommand());
+    controller.rightBumper().whileTrue(loader.ejectCommand())
+    .onFalse(loader.stopCommand());
+    controller.leftBumper().whileTrue(loader.intakeCommand())
+    .onFalse(loader.stopCommand());
 
     drive.setDefaultCommand(
       DriveCommands.joystickDrive(
@@ -139,12 +143,14 @@ public class RobotContainer {
     // Manual Pivot Movement
     controller
       .povUp()
-      .whileTrue(pivot.changeGoalPosition(0.5))
-      .onFalse(pivot.changeGoalPosition(0.0));
+      .whileTrue(pivot.changeGoalPosition(20))
+      .whileFalse(pivot.changeGoalPosition(0));
+
     controller
       .povDown()
-      .whileTrue(pivot.changeGoalPosition(-0.5))
-      .onFalse(pivot.changeGoalPosition(0.0));
+      .whileTrue(pivot.changeGoalPosition(-20))
+      .whileFalse(pivot.changeGoalPosition(0));
+
   }
 
   /**

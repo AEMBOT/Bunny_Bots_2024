@@ -30,7 +30,7 @@ public class LoaderIOSparkMax implements LoaderIO {
         inputs.motorCurrentAmps = motor.getOutputCurrent();
     }
 
-    public void setMotorVoltage(double voltage) {
+    public void setMotorVolts(double voltage) {
         motor.setVoltage(voltage);
     }
 }

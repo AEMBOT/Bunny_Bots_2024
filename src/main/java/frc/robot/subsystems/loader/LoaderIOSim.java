@@ -21,7 +21,7 @@ public class LoaderIOSim implements LoaderIO {
         inputs.motorCurrentAmps = motorSim.getCurrentDrawAmps();
     }
 
-    public void setMotorVoltage(double voltage) {
+    public void setMotorVolts(double voltage) {
         motorSim.setInputVoltage(voltage);
         motorAppliedVolts = voltage;
     }

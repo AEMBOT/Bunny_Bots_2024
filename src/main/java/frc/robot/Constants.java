@@ -62,9 +62,9 @@ public final class Constants{
 
   public static final class PivotConstants { 
     /** Maximum angle for the pivot to move to, in degrees */
-    public static final double pivotMaxAngle = 90;
+    public static final double pivotMaxAngle = 170;
     /** Minimum angle for the pivot to move to, in degrees */
-    public static final double pivotMinAngle = 0;
+    public static final double pivotMinAngle = 50;
     /** ID of the left pivot sparkmax */
     public static final int pivotLeftMotorID = currentRobot == Robot.BUNNYBOT
       ? 10
@@ -72,7 +72,7 @@ public final class Constants{
     /**  */
     public static final boolean pivotLeftMotorInverted = false;
     /**  */
-    public static final int pivotLeftMotorCurrentLimit = 60;
+    public static final int pivotLeftMotorCurrentLimit = 10;
     /** ID of the right pivot sparkmax */
     public static final int pivotRightMotorID = currentRobot == Robot.BUNNYBOT
       ? 11
@@ -80,11 +80,11 @@ public final class Constants{
     /**  */
     public static final boolean pivotRightMotorInverted = false;
     /**  */
-    public static final int pivotRightMotorCurrentLimit = 60;
+    public static final int pivotRightMotorCurrentLimit = 10;
     /**  */
     public static final DutyCycleEncoder pivotEncoder = new DutyCycleEncoder(3);
     /**  */
-    public static final double pivotEncoderPositionOffset = 4.04433682 / (2 * Math.PI);
+    public static final double pivotEncoderPositionOffset = 0.25;
     /**  */
     public static final double gearRatio = 93.3333333;
     /**  */
@@ -113,7 +113,7 @@ public final class Constants{
     /**  */
     public static final Translation3d pivotTranslationFromRobot = new Translation3d(-0.2, 0, 0.255);
     /**  */
-    public static final double pivotDefaultAngle = 45;
+    public static final double pivotDefaultAngle = 90;
     /**  */
     public static final double pivotSimGoalPosition = 1.05;
     /**  */
@@ -136,9 +136,9 @@ public final class Constants{
       ? 15
       : 0; // unused on llightcycle
     /* Voltages */
-    public static final double MOTOR_VOLTAGE = 1.0; // PLACEHOLDER VALUE
+    public static final double MOTOR_VOLTAGE = 12; // PLACEHOLDER VALUE
     /* CURRENT LIMITS */
-    public static final int MOTOR_CURRENT_LIMIT = 5; // PLACEHOLDER VALUE
+    public static final int MOTOR_CURRENT_LIMIT = 25; // PLACEHOLDER VALUE
   }
   
   public static final class DriveConstants {
