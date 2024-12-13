@@ -25,6 +25,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 import java.util.List;
@@ -68,7 +69,6 @@ public class RobotContainer {
 
     // Controller
     private final CommandXboxController controller = new CommandXboxController(0);
-    private final CommandXboxController backupController = new CommandXboxController(1);
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
@@ -128,7 +128,7 @@ public class RobotContainer {
         /* AUTO */
         PathConstraints autoConstraints = new PathConstraints(5, 2.5, Math.PI, 1); // Arbitrary. Probably adjust.
 
-        // Mobility
+        // Mobility (Useless =( )
         List<Translation2d> mobilityAutoWaypoints = PathPlannerPath.bezierFromPoses(
           new Pose2d(5.0, 4.0, Rotation2d.fromDegrees(0))
         );
@@ -145,8 +145,45 @@ public class RobotContainer {
             .andThen(AutoBuilder.followPath(mobilityAutoPath))
           );
 
+        // Relative to blue, upper = left and lower = right
+        // Upper 1st Tote
+        NamedCommands.registerCommand(
+          "UpperFirstToteAuto",
+          autoBunnyCommand(new Pose2d(1.7, 6, Rotation2d.fromDegrees(0)), autoConstraints, false)
+        );
+        // Lower 1st Tote
+        NamedCommands.registerCommand(
+          "LowerFirstToteAuto",
+          autoBunnyCommand(new Pose2d(1.7, 2, Rotation2d.fromDegrees(0)), autoConstraints, true)
+        );
+        // Upper 2nd
+        NamedCommands.registerCommand(
+          "UpperSecondToteAuto",
+          autoBunnyCommand(new Pose2d(4.5, 6, Rotation2d.fromDegrees(0)), autoConstraints, false)
+        );
+        // Lower 2nd
+        NamedCommands.registerCommand(
+          "LowerSecondToteAuto",
+          autoBunnyCommand(new Pose2d(4.5, 2, Rotation2d.fromDegrees(0)), autoConstraints, true)
+        );
+        // Upper 3rd
+        NamedCommands.registerCommand(
+          "UpperThirdToteAuto",
+          autoBunnyCommand(new Pose2d(7, 6, Rotation2d.fromDegrees(0)), autoConstraints, false)
+        );
+        // Lower 3rd
+        NamedCommands.registerCommand(
+          "LowerThirdToteAuto",
+          autoBunnyCommand(new Pose2d(7, 2, Rotation2d.fromDegrees(0)), autoConstraints, true)
+        );
+
         // Add autos to autoChooser
-        autoChooser.addOption("Mobility" ,NamedCommands.getCommand("MobilityAuto"));
+        autoChooser.addOption("Upper 1st Tote", NamedCommands.getCommand("UpperFirstToteAuto"));
+        autoChooser.addOption("Lower 1st Tote", NamedCommands.getCommand("LowerFirstToteAuto"));
+        autoChooser.addOption("Upper 2nd Tote", NamedCommands.getCommand("UpperSecondToteAuto"));
+        autoChooser.addOption("Lower 2nd Tote", NamedCommands.getCommand("LowerSecondToteAuto"));
+        autoChooser.addOption("Upper 3rd Tote", NamedCommands.getCommand("UpperThirdToteAuto"));
+        autoChooser.addOption("Lower 3rd Tote", NamedCommands.getCommand("LowerThirdToteAuto"));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -179,6 +216,52 @@ public class RobotContainer {
       .povDown()
       .whileTrue(pivot.changeGoalPosition(-0.5))
       .onFalse(pivot.changeGoalPosition(0.0));
+  }
+
+  /**
+   * Returns a PathPlanner path to the nearest tote.
+   * @param constraints
+   * @param side The side of the field we're on. `false` is upper and `true` is lower.
+   * @return a PathPlanner path to the nearest tote.
+   */
+  public PathPlannerPath pathToClosestTote(PathConstraints constraints, Boolean side) {
+    Transform3d toteDistance = vision.getTransformToClostestToteTag();
+
+    Rotation2d alignRotation = side ? Rotation2d.fromDegrees(-90) : Rotation2d.fromDegrees(90);
+
+    List<Translation2d> waypoint = PathPlannerPath.bezierFromPoses(
+          new Pose2d(toteDistance.getX(), toteDistance.getY(), alignRotation)
+    );
+
+    PathPlannerPath path = new PathPlannerPath(
+      waypoint,
+      constraints,
+      new GoalEndState(0, alignRotation)
+    );
+    path.preventFlipping = true;
+
+    return path;
+  }
+
+  /**
+   * Returns a command to automatically drop off a bunny at a given tote.
+   * @param toteApproachPoint A point near the tote. From this point we will path to the nearest tote.
+   * @param constraints PathConstraints
+   * @param side The side of the field we're on. `false` is upper and `true` is lower.
+   * @return a command to automatically drop off a bunny at a given tote.
+   */
+  public Command autoBunnyCommand(Pose2d toteApproachPoint, PathConstraints constraints, Boolean side) {
+    PathPlannerPath approachPath = new PathPlannerPath(
+          PathPlannerPath.bezierFromPoses(toteApproachPoint),
+          constraints,
+          new GoalEndState(0, new Rotation2d(90))
+    );
+
+    return loader.intakeCommand() // Just in case.
+      .andThen(pivot.setPositionCommand(null)) // TODO: Make angle not null
+      .andThen(AutoBuilder.followPath(approachPath))
+      .andThen(() -> AutoBuilder.followPath(pathToClosestTote(constraints, side)))
+      .andThen(loader.ejectCommand());
   }
 
   /**
