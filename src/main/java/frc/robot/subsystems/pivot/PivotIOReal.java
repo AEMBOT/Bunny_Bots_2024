@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase;
 import edu.wpi.first.wpilibj.Timer;
+import org.littletonrobotics.junction.Logger;
 
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -17,8 +18,8 @@ public class PivotIOReal implements PivotIO {
     private boolean openLoop = true;
     private final CANSparkMax leadingMotor = new CANSparkMax(pivotLeftMotorID, MotorType.kBrushless);
     private final CANSparkMax followingMotor = new CANSparkMax(pivotRightMotorID, MotorType.kBrushless);
-    private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
-    private TrapezoidProfile.State pivotSetpoint = new TrapezoidProfile.State();
+    private TrapezoidProfile.State pivotGoal;
+    private TrapezoidProfile.State pivotSetpoint;
     private double lastTime;
 
 
@@ -42,6 +43,8 @@ public class PivotIOReal implements PivotIO {
 
         pivotEncoder.setPositionOffset(pivotEncoderPositionOffset);
 
+        pivotGoal = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
+        pivotSetpoint = new TrapezoidProfile.State(getAbsoluteEncoderPosition(), 0);
     }
 
     public void updateInputs(PivotIOInputs inputs) {
@@ -59,6 +62,8 @@ public class PivotIOReal implements PivotIO {
     public void setAngle(double angle) {
         openLoop = false;
 
+        angle = clamp(angle, pivotMinAngle, pivotMaxAngle);
+
         pivotGoal = new TrapezoidProfile.State(Units.degreesToRadians(angle), 0);
 
         pivotSetpoint = 
@@ -73,11 +78,14 @@ public class PivotIOReal implements PivotIO {
             pivotGoal.position, 
             0);
         double pidOutput = pivotPIDController.calculate(
-            Units.degreesToRadians(
-                getAbsoluteEncoderPosition()), 
+                Units.degreesToRadians(getAbsoluteEncoderPosition()), 
                 pivotGoal.position);
 
-        setMotorVoltage(feedForward + pidOutput);
+        Logger.recordOutput("Pivot/CalculatedFFVolts", feedForward);
+        Logger.recordOutput("Pivot/PIDCommandVolts", pidOutput);
+
+                
+        setMotorVoltage(feedForward - pidOutput);
 
         lastTime = Timer.getFPGATimestamp();
     }
@@ -89,15 +97,15 @@ public class PivotIOReal implements PivotIO {
     }
 
     private double getAbsoluteEncoderPosition() {
-        return Units.radiansToDegrees(pivotEncoder.getAbsolutePosition() - pivotEncoder.getPositionOffset());
+        return (pivotEncoder.getAbsolutePosition() - pivotEncoder.getPositionOffset()) * 360;
     }
 
     private void setMotorVoltage(double volts) {
         if (getAbsoluteEncoderPosition() < pivotMinAngle) {
-            volts = clamp(volts, -1, Double.MAX_VALUE);
+            volts = clamp(volts, -Double.MAX_VALUE, 0);
         }
         if (getAbsoluteEncoderPosition() > pivotMaxAngle) {
-            volts = clamp(volts, Double.MIN_VALUE, 1);
+            volts = clamp(volts, 0, Double.MAX_VALUE);
         }
 
         leadingMotor.setVoltage(volts);
